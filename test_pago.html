@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>VAL Configurator — Prueba de Pago</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0d1117;
+            color: #c9d1d9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            background: #161b22;
+            border: 1px solid #21262d;
+            border-radius: 16px;
+            padding: 40px;
+            width: 420px;
+            text-align: center;
+        }
+        h1 { color: #ff4655; font-size: 22px; margin-bottom: 6px; }
+        .subtitle { color: #8b949e; font-size: 13px; margin-bottom: 30px; }
+        .precio {
+            font-size: 48px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .precio span { font-size: 20px; color: #8b949e; }
+        .desc { color: #8b949e; font-size: 13px; margin-bottom: 30px; }
+        .badge {
+            display: inline-block;
+            background: #ff465520;
+            color: #ff4655;
+            border: 1px solid #ff465540;
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+        #paypal-button-container { margin-top: 10px; }
+        #resultado {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 10px;
+            display: none;
+            font-size: 14px;
+        }
+        #resultado.ok {
+            background: #22c55e20;
+            border: 1px solid #22c55e40;
+            color: #22c55e;
+        }
+        #resultado.error {
+            background: #ef444420;
+            border: 1px solid #ef444440;
+            color: #ef4444;
+        }
+        .sandbox-note {
+            margin-top: 24px;
+            padding: 12px;
+            background: #f59e0b15;
+            border: 1px solid #f59e0b30;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #f59e0b;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>VAL Configurator</h1>
+    <p class="subtitle">Herramienta de configuración para Valorant</p>
+
+    <div class="badge">🧪 MODO SANDBOX — PRUEBA</div>
+
+    <div class="precio">$5 <span>USD</span></div>
+    <p class="desc">Licencia permanente · Un solo equipo</p>
+
+    <div id="paypal-button-container"></div>
+
+    <div id="resultado"></div>
+
+    <div class="sandbox-note">
+        ⚠️ Usa la cuenta Personal del Sandbox para pagar.<br>
+        Email: <strong>valpaypal@dev.com</strong>
+    </div>
+</div>
+
+<script src="https://www.paypal.com/sdk/js?client-id=AY-3IUVuoPTw6f-WMKaIYN3_v5oZb9SCB-PmckxeWmAPNb4i3y9eFo78D5iq2KXhcajvT4TwzX4EpEgL&currency=USD&intent=capture"></script>
+<script>
+    paypal.Buttons({
+        style: {
+            color:  'red',
+            shape:  'rect',
+            label:  'pay',
+            height: 45
+        },
+
+        createOrder: function(data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    description: 'VAL Configurator — Licencia Permanente',
+                    amount: {
+                        currency_code: 'USD',
+                        value: '5.00'
+                    }
+                }]
+            });
+        },
+
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+                const email = details.payer.email_address;
+                const orderId = details.id;
+
+                document.getElementById('resultado').style.display = 'block';
+                document.getElementById('resultado').className = 'ok';
+                document.getElementById('resultado').innerHTML =
+                    '✅ Pago completado<br><strong>' + email + '</strong><br>Orden: ' + orderId + '<br><br>⏳ Enviando clave al correo...';
+
+                // Notificar al backend (en producción esto lo hace PayPal automáticamente)
+                fetch('https://val-backend-or4y.onrender.com/webhook-paypal', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        event_type: 'PAYMENT.CAPTURE.COMPLETED',
+                        resource: {
+                            id: orderId,
+                            status: 'COMPLETED',
+                            payer: {
+                                email_address: email
+                            },
+                            supplementary_data: {
+                                related_ids: { order_id: orderId }
+                            }
+                        }
+                    })
+                })
+                .then(r => r.json())
+                .then(resp => {
+                    if (resp.status === 'ok') {
+                        document.getElementById('resultado').innerHTML =
+                            '✅ ¡Pago exitoso!<br>Clave generada: <strong>' + resp.clave + '</strong><br>Enviada a: <strong>' + email + '</strong>';
+                    }
+                })
+                .catch(err => {
+                    document.getElementById('resultado').className = 'error';
+                    document.getElementById('resultado').innerHTML = '❌ Error al contactar el servidor: ' + err;
+                });
+            });
+        },
+
+        onError: function(err) {
+            document.getElementById('resultado').style.display = 'block';
+            document.getElementById('resultado').className = 'error';
+            document.getElementById('resultado').innerHTML = '❌ Error en el pago: ' + err;
+        }
+    }).render('#paypal-button-container');
+</script>
+</body>
+</html>
