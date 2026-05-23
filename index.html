@@ -400,7 +400,22 @@
       max-width: 440px;
       width: 90%;
       box-shadow: 0 0 80px rgba(120,80,255,.25);
+      position: relative;
     }
+    .success-close {
+      position: absolute;
+      top: 14px; right: 16px;
+      background: none;
+      border: none;
+      color: #6b7280;
+      font-size: 22px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: color .2s, background .2s;
+    }
+    .success-close:hover { color: #e0d9ff; background: rgba(255,255,255,.08); }
     .success-icon { font-size: 56px; margin-bottom: 16px; }
     .success-card h2 {
       font-family: 'Rajdhani', sans-serif;
@@ -640,6 +655,7 @@
 <!-- ── SUCCESS OVERLAY ── -->
 <div id="success-overlay">
   <div class="success-card">
+    <button class="success-close" onclick="document.getElementById('success-overlay').classList.remove('show')" title="Cerrar">✕</button>
     <div class="success-icon">🎉</div>
     <h2>¡Pago confirmado!</h2>
     <p>Tu clave de activación fue enviada a:</p>
