@@ -1,12 +1,11 @@
 /**
  * POST /api/capture-order
  * Captura el pago aprobado por el usuario.
- * Solo si el capture es COMPLETED → genera clave → guarda en BD → envía email.
+ * Solo si el capture es COMPLETED → genera clave → guarda en BD vía Render → envía email.
  * Si el pago NO fue aprobado → no se envía nada.
  */
 
-import pg from 'pg';
-const { Client } = pg;
+import { randomBytes } from 'crypto';
 
 const PAYPAL_BASE =
   process.env.PAYPAL_MODE === 'live'
@@ -45,34 +44,35 @@ async function getAccessToken() {
   return data.access_token;
 }
 
-/** Genera una clave de activación con formato VAL-XXXXXX-XXXXXX */
+/** Genera una clave de activación con formato VAL-XXXXXXXX (hex, igual que Render) */
 function generateActivationKey() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  const segment = (len) =>
-    Array.from({ length: len }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-  return `VAL-${segment(6)}-${segment(6)}`;
+  return 'VAL-' + randomBytes(4).toString('hex').toUpperCase();
 }
 
-/** Guarda la clave en la base de datos PostgreSQL (no bloqueante) */
-async function saveKeyToDatabase(clave, plan) {
+/** Guarda la clave en la BD llamando al backend de Render */
+async function saveKeyViaRender(clave, plan) {
   const tipo = PLAN_TIPOS[plan] || 'pro';
-  const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }, // requerido para conexiones externas a Render
+  const renderUrl = process.env.RENDER_BACKEND_URL || 'https://val-backend-or4y.onrender.com';
+
+  const res = await fetch(`${renderUrl}/crear-licencia`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      admin_key: process.env.ADMIN_KEY,
+      clave: clave,
+      tipo: tipo,
+      minutos: 0,
+    }),
   });
 
-  await client.connect();
-  try {
-    await client.query(
-      `INSERT INTO licencias (clave, tipo, duracion_minutos)
-       VALUES ($1, $2, $3)
-       ON CONFLICT (clave) DO NOTHING`,
-      [clave, tipo, 0]
-    );
-    console.log(`💾 Clave guardada en BD: ${clave} | tipo: ${tipo}`);
-  } finally {
-    await client.end();
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Render API error: ${err}`);
   }
+
+  const data = await res.json();
+  console.log(`💾 Clave guardada en BD vía Render: ${clave} | tipo: ${tipo}`);
+  return data;
 }
 
 /** Envía el email con la clave vía Resend */
@@ -227,15 +227,15 @@ export default async function handler(req, res) {
       });
     }
 
-    // 3. Pago OK → generar clave
+    // 3. Pago OK → generar clave (formato VAL-XXXXXXXX igual que Render)
     const activationKey = generateActivationKey();
     console.log(`✅ Pago COMPLETADO para ${email} | Plan: ${plan} | Clave: ${activationKey}`);
 
-    // 4. Guardar clave en BD (no bloqueante — si falla, igual se envía el email)
+    // 4. Guardar clave en BD vía Render (no bloqueante — si falla, igual se envía el email)
     try {
-      await saveKeyToDatabase(activationKey, plan);
-    } catch (dbErr) {
-      console.error('⚠️ Error al guardar en BD (el email se enviará igual):', dbErr.message);
+      await saveKeyViaRender(activationKey, plan);
+    } catch (renderErr) {
+      console.error('⚠️ Error al guardar en BD vía Render (el email se enviará igual):', renderErr.message);
     }
 
     // 5. Enviar email con la clave
