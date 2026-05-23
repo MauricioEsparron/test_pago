@@ -1,9 +1,12 @@
 /**
  * POST /api/capture-order
  * Captura el pago aprobado por el usuario.
- * Solo si el capture es COMPLETED → genera clave → envía email.
+ * Solo si el capture es COMPLETED → genera clave → guarda en BD → envía email.
  * Si el pago NO fue aprobado → no se envía nada.
  */
+
+import pg from 'pg';
+const { Client } = pg;
 
 const PAYPAL_BASE =
   process.env.PAYPAL_MODE === 'live'
@@ -13,6 +16,12 @@ const PAYPAL_BASE =
 const PLAN_LABELS = {
   pro:     'Pro',
   founder: 'Founder',
+};
+
+// Mapeo plan → tipo en la BD
+const PLAN_TIPOS = {
+  pro:     'pro',
+  founder: 'support',
 };
 
 /* ── Helpers ── */
@@ -44,6 +53,25 @@ function generateActivationKey() {
   return `VAL-${segment(6)}-${segment(6)}`;
 }
 
+/** Guarda la clave en la base de datos PostgreSQL */
+async function saveKeyToDatabase(clave, plan) {
+  const tipo = PLAN_TIPOS[plan] || 'pro';
+  const client = new Client({ connectionString: process.env.DATABASE_URL });
+
+  await client.connect();
+  try {
+    await client.query(
+      `INSERT INTO licencias (clave, tipo, duracion_minutos)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (clave) DO NOTHING`,
+      [clave, tipo, 0]
+    );
+    console.log(`💾 Clave guardada en BD: ${clave} | tipo: ${tipo}`);
+  } finally {
+    await client.end();
+  }
+}
+
 /** Envía el email con la clave vía Resend */
 async function sendActivationEmail(to, activationKey, plan) {
   const planLabel = PLAN_LABELS[plan] || plan;
@@ -55,7 +83,7 @@ async function sendActivationEmail(to, activationKey, plan) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: process.env.FROM_EMAIL,        // ej: "VAL_Config Pro <noreply@tudominio.com>"
+      from: process.env.FROM_EMAIL,
       to: [to],
       subject: `🎮 Tu clave de activación VAL_Config Pro — Licencia ${planLabel}`,
       html: `
@@ -181,18 +209,20 @@ export default async function handler(req, res) {
 
     if (captureStatus !== 'COMPLETED') {
       console.warn('Capture NO completado:', captureStatus, capture);
-      // Pago no completado → NO enviamos clave
       return res.status(200).json({
         success: false,
         message: `Pago en estado: ${captureStatus}. No se enviará la clave.`,
       });
     }
 
-    // 3. Pago OK → generar clave y enviar email
+    // 3. Pago OK → generar clave
     const activationKey = generateActivationKey();
-
     console.log(`✅ Pago COMPLETADO para ${email} | Plan: ${plan} | Clave: ${activationKey}`);
 
+    // 4. Guardar clave en BD
+    await saveKeyToDatabase(activationKey, plan);
+
+    // 5. Enviar email con la clave
     await sendActivationEmail(email, activationKey, plan);
 
     return res.status(200).json({ success: true });
