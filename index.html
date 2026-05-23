@@ -625,18 +625,27 @@
         Enviando clave a: <strong id="display-email" style="color:#a78bfa;"></strong>
       </p>
 
+      <!-- Sin plan seleccionado -->
+      <div id="no-plan-msg" style="text-align:center;padding:18px;color:#6b7280;font-size:13px;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.1);border-radius:10px;">
+        <i class="ti ti-arrow-up" style="display:block;font-size:24px;margin-bottom:8px;color:#4b5563;"></i>
+        Selecciona un plan arriba (Pro o Founder) para ver el botón de pago.
+      </div>
+
       <!-- Plan Pro -->
-      <div id="section-pro" style="margin-bottom:24px;">
-        <p style="font-size:13px;color:#e0d9ff;margin-bottom:10px;font-weight:600;letter-spacing:.5px;">Plan Pro — $4.99</p>
+      <div id="section-pro" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <p style="font-size:13px;color:#e0d9ff;font-weight:600;letter-spacing:.5px;">Plan Pro — $4.99</p>
+          <button onclick="clearPlan()" style="background:none;border:none;color:#6b7280;font-size:12px;cursor:pointer;text-decoration:underline;">Cambiar plan</button>
+        </div>
         <div id="paypal-buttons-pro"></div>
       </div>
 
-      <!-- Separador -->
-      <div style="border-top:1px solid rgba(255,255,255,.07);margin-bottom:24px;"></div>
-
       <!-- Plan Founder -->
-      <div id="section-founder">
-        <p style="font-size:13px;color:#e0d9ff;margin-bottom:10px;font-weight:600;letter-spacing:.5px;">Plan Founder — $9.99</p>
+      <div id="section-founder" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <p style="font-size:13px;color:#e0d9ff;font-weight:600;letter-spacing:.5px;">Plan Founder — $9.99</p>
+          <button onclick="clearPlan()" style="background:none;border:none;color:#6b7280;font-size:12px;cursor:pointer;text-decoration:underline;">Cambiar plan</button>
+        </div>
         <div id="paypal-buttons-founder"></div>
       </div>
     </div>
@@ -678,6 +687,7 @@
 <script>
   let emailValidated = false;
   let buyerEmail = '';
+  let selectedPlan = null;
   const PLANS = {
     pro:     { label: 'Pro',     price: '4.99', planId: 'pro'     },
     founder: { label: 'Founder', price: '9.99', planId: 'founder' }
@@ -731,10 +741,34 @@
       '<i class="ti ti-check"></i> Listo para pagar';
   }
 
+  function selectPlan(plan) {
+    selectedPlan = plan;
+    const info = PLANS[plan];
+
+    // Actualizar etiqueta del header
+    document.getElementById('selected-plan-tag').innerHTML =
+      `<i class="ti ti-tag"></i> ${info.label} — $${info.price}`;
+
+    // Mostrar solo el botón del plan elegido
+    document.getElementById('no-plan-msg').style.display = 'none';
+    document.getElementById('section-pro').style.display     = plan === 'pro'     ? 'block' : 'none';
+    document.getElementById('section-founder').style.display = plan === 'founder' ? 'block' : 'none';
+  }
+
+  function clearPlan() {
+    selectedPlan = null;
+    document.getElementById('selected-plan-tag').innerHTML =
+      '<i class="ti ti-tag"></i> Selecciona un plan';
+    document.getElementById('no-plan-msg').style.display      = 'block';
+    document.getElementById('section-pro').style.display      = 'none';
+    document.getElementById('section-founder').style.display  = 'none';
+  }
+
   function scrollToPay(plan) {
+    selectPlan(plan);
     document.getElementById('payment-section').scrollIntoView({ behavior: 'smooth' });
     if (!emailValidated) {
-      document.getElementById('buyer-email').focus();
+      setTimeout(() => document.getElementById('buyer-email').focus(), 500);
     }
   }
 
