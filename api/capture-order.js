@@ -92,51 +92,58 @@ async function sendActivationEmail(to, activationKey, plan) {
 <head>
   <meta charset="UTF-8"/>
   <style>
-    body { background:#0a0a0f; color:#e8e6f0; font-family:Arial,sans-serif; margin:0; padding:0; }
-    .container { max-width:520px; margin:40px auto; background:#111118; border:1px solid rgba(120,80,255,.3); border-radius:16px; overflow:hidden; }
-    .header { background:linear-gradient(135deg,#12101f,#1a0e3d); padding:32px; text-align:center; }
-    .header h1 { font-size:28px; color:#fff; margin:0 0 6px; }
-    .header p { font-size:13px; color:#9ca3af; margin:0; }
+    body { background:#0d1117; color:#c9d1d9; font-family:Arial,sans-serif; margin:0; padding:0; }
+    .container { max-width:520px; margin:40px auto; background:#161b22; border:1px solid #21262d; border-radius:16px; overflow:hidden; }
+    .header { background:linear-gradient(135deg,#1a0a0a,#2d0f0f); padding:32px; text-align:center; border-bottom:1px solid rgba(255,70,85,.2); }
+    .header h1 { font-size:28px; color:#ff4655; margin:0 0 6px; letter-spacing:2px; }
+    .header p { font-size:13px; color:#8b949e; margin:0; }
     .body { padding:32px; }
+    .body > p { color:#c9d1d9; margin-bottom:20px; }
     .key-box {
-      background:rgba(120,80,255,.12);
-      border:1px solid rgba(120,80,255,.4);
+      background:rgba(255,70,85,.08);
+      border:1px solid rgba(255,70,85,.5);
       border-radius:12px;
-      padding:20px;
+      padding:24px;
       text-align:center;
       margin:24px 0;
     }
-    .key-label { font-size:11px; color:#6b7280; letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; }
-    .key-value { font-size:26px; font-weight:700; color:#a78bfa; letter-spacing:3px; font-family:monospace; }
+    .key-label { font-size:11px; color:#6b7280; letter-spacing:3px; text-transform:uppercase; margin-bottom:12px; }
+    .key-value { font-size:28px; font-weight:700; color:#ff4655; letter-spacing:4px; font-family:monospace; }
     .plan-badge {
       display:inline-block;
-      background:#7c3aed;
-      color:#fff;
+      background:rgba(255,70,85,.15);
+      color:#ff4655;
+      border:1px solid rgba(255,70,85,.4);
       font-size:11px;
       font-weight:600;
-      padding:3px 12px;
+      padding:4px 14px;
       border-radius:20px;
       text-transform:uppercase;
       letter-spacing:1px;
-      margin-bottom:16px;
+      margin-bottom:20px;
     }
-    .steps { background:rgba(255,255,255,.03); border-radius:10px; padding:18px; margin:20px 0; }
-    .steps h3 { font-size:13px; color:#e0d9ff; margin:0 0 12px; }
+    .info-row { display:flex; gap:8px; margin-bottom:8px; font-size:13px; }
+    .info-label { color:#8b949e; }
+    .info-value { color:#c9d1d9; font-weight:600; }
+    .steps { background:rgba(255,255,255,.03); border:1px solid #21262d; border-radius:10px; padding:18px; margin:20px 0; }
+    .steps h3 { font-size:13px; color:#ff4655; margin:0 0 12px; }
     .steps ol { margin:0; padding-left:20px; }
-    .steps li { font-size:13px; color:#9ca3af; margin-bottom:8px; line-height:1.5; }
-    .steps li strong { color:#e0d9ff; }
-    .warning { background:rgba(251,191,36,.1); border:1px solid rgba(251,191,36,.3); border-radius:8px; padding:14px; font-size:12px; color:#fbbf24; margin-top:20px; }
-    .footer { border-top:1px solid rgba(255,255,255,.06); padding:20px 32px; text-align:center; font-size:11px; color:#4b5563; }
+    .steps li { font-size:13px; color:#8b949e; margin-bottom:8px; line-height:1.5; }
+    .steps li strong { color:#c9d1d9; }
+    .warning { font-size:12px; color:#8b949e; margin-top:20px; border-top:1px solid #21262d; padding-top:16px; }
+    .warning a { color:#ff4655; text-decoration:none; }
+    .footer { border-top:1px solid #21262d; padding:20px 32px; text-align:center; font-size:11px; color:#4b5563; }
+    .footer a { color:#ff4655; text-decoration:none; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>VAL_Config<span style="color:#8b5cf6">Pro</span></h1>
-      <p>Tu herramienta de configuración competitiva</p>
+      <h1>VAL Configurator</h1>
+      <p>Tu herramienta de configuración para Valorant</p>
     </div>
     <div class="body">
-      <p>¡Gracias por tu compra! Tu pago fue procesado correctamente.</p>
+      <p>¡Gracias por tu compra! Aquí está tu clave de activación:</p>
       <div style="text-align:center;">
         <span class="plan-badge">Licencia ${planLabel}</span>
       </div>
@@ -144,6 +151,8 @@ async function sendActivationEmail(to, activationKey, plan) {
         <div class="key-label">Clave de Activación</div>
         <div class="key-value">${activationKey}</div>
       </div>
+      <div class="info-row"><span class="info-label">Tipo:</span><span class="info-value">Licencia Permanente</span></div>
+      <div class="info-row"><span class="info-label">Duración:</span><span class="info-value">Permanente</span></div>
       <div class="steps">
         <h3>¿Cómo activar?</h3>
         <ol>
@@ -154,13 +163,13 @@ async function sendActivationEmail(to, activationKey, plan) {
         </ol>
       </div>
       <div class="warning">
-        ⚠️ <strong>Importante:</strong> Esta clave es válida para un solo equipo. No la compartas.
-        Si cambias de PC, contacta soporte en Discord: <strong>maxpredator</strong>
+        Esta clave está vinculada a <strong>un solo equipo</strong>. Si cambias de PC contáctanos a
+        <a href="mailto:mauriciodev.support@gmail.com">mauriciodev.support@gmail.com</a>
       </div>
     </div>
     <div class="footer">
       VAL_Config Pro · Desarrollado por Mauricio Ramirez<br/>
-      Este correo se envió a ${to} tras confirmar tu compra.
+      Este correo se envió a <a href="mailto:${to}">${to}</a> tras confirmar tu compra.
     </div>
   </div>
 </body>
