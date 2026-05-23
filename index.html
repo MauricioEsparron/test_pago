@@ -172,6 +172,8 @@
       padding: 20px 16px;
       position: relative;
       transition: border-color .2s;
+      display: flex;
+      flex-direction: column;
     }
     .plan:hover { border-color: rgba(120,80,255,.3); }
     .plan.featured { border-color: rgba(120,80,255,.5); background: rgba(120,80,255,.07); }
@@ -193,7 +195,7 @@
     .plan-price { font-family: 'Rajdhani', sans-serif; font-size: 30px; font-weight: 700; color: #fff; margin-bottom: 4px; }
     .plan-price .orig { font-size: 13px; color: #4b5563; text-decoration: line-through; font-weight: 400; margin-left: 6px; }
     .plan-desc { font-size: 11px; color: #6b7280; margin-bottom: 16px; }
-    .plan-features { list-style: none; font-size: 12px; margin-bottom: 20px; }
+    .plan-features { list-style: none; font-size: 12px; margin-bottom: 20px; flex: 1; }
     .plan-features li { padding: 4px 0; color: #9ca3af; display: flex; align-items: center; gap: 6px; }
     .plan-features li .check { color: #8b5cf6; }
     .plan-features li .cross { color: #374151; }
