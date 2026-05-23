@@ -53,10 +53,13 @@ function generateActivationKey() {
   return `VAL-${segment(6)}-${segment(6)}`;
 }
 
-/** Guarda la clave en la base de datos PostgreSQL */
+/** Guarda la clave en la base de datos PostgreSQL (no bloqueante) */
 async function saveKeyToDatabase(clave, plan) {
   const tipo = PLAN_TIPOS[plan] || 'pro';
-  const client = new Client({ connectionString: process.env.DATABASE_URL });
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }, // requerido para conexiones externas a Render
+  });
 
   await client.connect();
   try {
@@ -228,8 +231,12 @@ export default async function handler(req, res) {
     const activationKey = generateActivationKey();
     console.log(`✅ Pago COMPLETADO para ${email} | Plan: ${plan} | Clave: ${activationKey}`);
 
-    // 4. Guardar clave en BD
-    await saveKeyToDatabase(activationKey, plan);
+    // 4. Guardar clave en BD (no bloqueante — si falla, igual se envía el email)
+    try {
+      await saveKeyToDatabase(activationKey, plan);
+    } catch (dbErr) {
+      console.error('⚠️ Error al guardar en BD (el email se enviará igual):', dbErr.message);
+    }
 
     // 5. Enviar email con la clave
     await sendActivationEmail(email, activationKey, plan);
