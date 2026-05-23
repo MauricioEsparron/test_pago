@@ -776,7 +776,7 @@
   function renderPaypalButtons() {
     // Plan Pro
     paypal.Buttons({
-      style: { layout: 'horizontal', color: 'blue', shape: 'rect', label: 'pay', height: 44 },
+      style: { layout: 'horizontal', color: 'blue', shape: 'rect', label: 'pay', height: 44, tagline: false },
 
       createOrder: function() {
         if (!emailValidated) {
@@ -818,7 +818,7 @@
 
     // Plan Founder
     paypal.Buttons({
-      style: { layout: 'horizontal', color: 'gold', shape: 'rect', label: 'pay', height: 44 },
+      style: { layout: 'horizontal', color: 'gold', shape: 'rect', label: 'pay', height: 44, tagline: false },
 
       createOrder: function() {
         if (!emailValidated) {
