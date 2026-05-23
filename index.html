@@ -1,166 +1,817 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>VAL Configurator — Prueba de Pago</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #0d1117;
-            color: #c9d1d9;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .card {
-            background: #161b22;
-            border: 1px solid #21262d;
-            border-radius: 16px;
-            padding: 40px;
-            width: 420px;
-            text-align: center;
-        }
-        h1 { color: #ff4655; font-size: 22px; margin-bottom: 6px; }
-        .subtitle { color: #8b949e; font-size: 13px; margin-bottom: 30px; }
-        .precio {
-            font-size: 48px;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 6px;
-        }
-        .precio span { font-size: 20px; color: #8b949e; }
-        .desc { color: #8b949e; font-size: 13px; margin-bottom: 30px; }
-        .badge {
-            display: inline-block;
-            background: #ff465520;
-            color: #ff4655;
-            border: 1px solid #ff465540;
-            border-radius: 20px;
-            padding: 4px 14px;
-            font-size: 12px;
-            margin-bottom: 20px;
-        }
-        #paypal-button-container { margin-top: 10px; }
-        #resultado {
-            margin-top: 20px;
-            padding: 16px;
-            border-radius: 10px;
-            display: none;
-            font-size: 14px;
-        }
-        #resultado.ok {
-            background: #22c55e20;
-            border: 1px solid #22c55e40;
-            color: #22c55e;
-        }
-        #resultado.error {
-            background: #ef444420;
-            border: 1px solid #ef444440;
-            color: #ef4444;
-        }
-        .sandbox-note {
-            margin-top: 24px;
-            padding: 12px;
-            background: #f59e0b15;
-            border: 1px solid #f59e0b30;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #f59e0b;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VAL_Config Pro — Comprar Licencia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0a0f;
+      color: #e8e6f0;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 420px;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0d0d1a 0%, #12101f 50%, #0a0a0f 100%);
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 40%, #1a0e3d 0%, #0a0a0f 70%);
+    }
+    .scanlines {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.15) 2px, rgba(0,0,0,.15) 4px);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(120,80,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(120,80,255,.06) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: 0;
+    }
+    .hero-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 2;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(120,80,255,.2);
+      border: 1px solid rgba(120,80,255,.4);
+      color: #a78bfa;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+    .hero-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 62px;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 60px rgba(120,80,255,.5);
+      line-height: 1;
+    }
+    .hero-title span { color: #8b5cf6; }
+    .hero-subtitle { font-size: 14px; color: #9ca3af; margin-top: 10px; letter-spacing: 1px; }
+    .hero-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 120px;
+      background: linear-gradient(transparent, #0a0a0f);
+      z-index: 2;
+    }
+
+    /* ── LAYOUT ── */
+    .content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .section-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #6b7280;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    /* ── SPECS ── */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 36px;
+    }
+    .spec-card {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+    }
+    .spec-num {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: #8b5cf6;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .spec-label { font-size: 11px; color: #6b7280; }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 36px;
+    }
+    .feature-item {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .feature-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: rgba(120,80,255,.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #8b5cf6;
+      font-size: 16px;
+    }
+    .feature-text strong { display: block; font-size: 13px; font-weight: 500; color: #e0d9ff; margin-bottom: 2px; }
+    .feature-text span { font-size: 12px; color: #6b7280; }
+
+    /* ── PLANS ── */
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+    .plan {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px;
+      padding: 20px 16px;
+      position: relative;
+      transition: border-color .2s;
+    }
+    .plan:hover { border-color: rgba(120,80,255,.3); }
+    .plan.featured { border-color: rgba(120,80,255,.5); background: rgba(120,80,255,.07); }
+    .plan-badge {
+      position: absolute;
+      top: -10px; left: 50%;
+      transform: translateX(-50%);
+      background: #7c3aed;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .plan-name { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; color: #e0d9ff; margin-bottom: 4px; }
+    .plan-price { font-family: 'Rajdhani', sans-serif; font-size: 30px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .plan-price .orig { font-size: 13px; color: #4b5563; text-decoration: line-through; font-weight: 400; margin-left: 6px; }
+    .plan-desc { font-size: 11px; color: #6b7280; margin-bottom: 16px; }
+    .plan-features { list-style: none; font-size: 12px; margin-bottom: 20px; }
+    .plan-features li { padding: 4px 0; color: #9ca3af; display: flex; align-items: center; gap: 6px; }
+    .plan-features li .check { color: #8b5cf6; }
+    .plan-features li .cross { color: #374151; }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity .2s, transform .1s;
+      font-family: 'Rajdhani', sans-serif;
+      letter-spacing: .5px;
+      border: none;
+    }
+    .btn:hover { opacity: .85; transform: translateY(-1px); }
+    .btn:active { transform: scale(.98); }
+    .btn-free { background: rgba(255,255,255,.07); color: #e0d9ff; border: 1px solid rgba(255,255,255,.12); }
+    .btn-pro { background: #7c3aed; color: #fff; }
+    .btn-founder { background: linear-gradient(135deg, #7c3aed, #a855f7); color: #fff; }
+    .btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+
+    /* ── EMAIL FORM ── */
+    .email-form-section {
+      background: rgba(120,80,255,.08);
+      border: 1px solid rgba(120,80,255,.3);
+      border-radius: 16px;
+      padding: 28px 28px 24px;
+      margin-bottom: 28px;
+    }
+    .email-form-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .email-form-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: rgba(120,80,255,.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #a78bfa;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .email-form-header h3 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #e0d9ff;
+    }
+    .email-form-header p { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+    .email-form-desc {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+    .email-input-wrap {
+      position: relative;
+    }
+    .email-input-wrap input {
+      width: 100%;
+      background: rgba(0,0,0,.4);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 10px;
+      color: #e0d9ff;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      padding: 12px 48px 12px 16px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .email-input-wrap input::placeholder { color: #4b5563; }
+    .email-input-wrap input:focus {
+      border-color: rgba(120,80,255,.6);
+      box-shadow: 0 0 0 3px rgba(120,80,255,.12);
+    }
+    .email-input-wrap input.valid {
+      border-color: rgba(34,197,94,.5);
+      box-shadow: 0 0 0 3px rgba(34,197,94,.08);
+    }
+    .email-input-wrap input.invalid {
+      border-color: rgba(239,68,68,.5);
+    }
+    .email-check {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: #22c55e;
+      display: none;
+    }
+    .email-error {
+      font-size: 12px;
+      color: #f87171;
+      margin-top: 6px;
+      display: none;
+    }
+    .email-confirm-note {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+    .email-confirm-note i { color: #8b5cf6; font-size: 14px; }
+
+    /* ── PAYPAL SECTION ── */
+    .paypal-section {
+      background: rgba(0,112,186,.08);
+      border: 1px solid rgba(0,112,186,.2);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 28px;
+    }
+    .paypal-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .paypal-section-header div strong { display: block; font-size: 15px; color: #e0d9ff; margin-bottom: 3px; }
+    .paypal-section-header div span { font-size: 12px; color: #6b7280; }
+
+    .paypal-lock-notice {
+      background: rgba(255,255,255,.04);
+      border: 1px dashed rgba(255,255,255,.1);
+      border-radius: 10px;
+      padding: 18px;
+      text-align: center;
+      color: #6b7280;
+      font-size: 13px;
+    }
+    .paypal-lock-notice i { display: block; font-size: 28px; color: #4b5563; margin-bottom: 8px; }
+
+    #paypal-buttons-pro, #paypal-buttons-founder { min-height: 50px; }
+
+    .plan-price-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(120,80,255,.15);
+      border: 1px solid rgba(120,80,255,.3);
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #a78bfa;
+    }
+
+    /* ── DISCORD ── */
+    .discord-bar {
+      background: rgba(88,101,242,.1);
+      border: 1px solid rgba(88,101,242,.25);
+      border-radius: 10px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .discord-bar .icon {
+      width: 36px; height: 36px;
+      background: rgba(88,101,242,.2);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #818cf8; font-size: 18px; flex-shrink: 0;
+    }
+    .discord-bar p { font-size: 13px; color: #9ca3af; }
+    .discord-bar strong { color: #e0d9ff; font-size: 14px; display: block; margin-bottom: 2px; }
+
+    /* ── SUCCESS OVERLAY ── */
+    #success-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.85);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+    #success-overlay.show { display: flex; }
+    .success-card {
+      background: #111118;
+      border: 1px solid rgba(120,80,255,.4);
+      border-radius: 20px;
+      padding: 48px 40px;
+      text-align: center;
+      max-width: 440px;
+      width: 90%;
+      box-shadow: 0 0 80px rgba(120,80,255,.25);
+    }
+    .success-icon { font-size: 56px; margin-bottom: 16px; }
+    .success-card h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: #e0d9ff;
+      margin-bottom: 10px;
+    }
+    .success-card p { font-size: 14px; color: #9ca3af; line-height: 1.7; }
+    .success-email {
+      display: inline-block;
+      background: rgba(120,80,255,.15);
+      border: 1px solid rgba(120,80,255,.3);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+      color: #a78bfa;
+      margin: 16px 0;
+      word-break: break-all;
+    }
+    .success-warning {
+      font-size: 12px;
+      color: #f59e0b;
+      margin-top: 12px;
+    }
+
+    /* ── SANDBOX BADGE ── */
+    .sandbox-badge {
+      position: fixed;
+      bottom: 16px; right: 16px;
+      background: rgba(251,191,36,.15);
+      border: 1px solid rgba(251,191,36,.3);
+      color: #fbbf24;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+      z-index: 100;
+    }
+
+    @media (max-width: 600px) {
+      .plans { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .specs-grid { grid-template-columns: repeat(3, 1fr); }
+      .hero-title { font-size: 40px; }
+    }
+  </style>
 </head>
 <body>
-<div class="card">
-    <h1>VAL Configurator</h1>
-    <p class="subtitle">Herramienta de configuración para Valorant</p>
 
-    <div class="badge">🧪 MODO SANDBOX — PRUEBA</div>
-
-    <div class="precio">$5 <span>USD</span></div>
-    <p class="desc">Licencia permanente · Un solo equipo</p>
-
-    <div id="paypal-button-container"></div>
-
-    <div id="resultado"></div>
-
-    <div class="sandbox-note">
-        ⚠️ Usa la cuenta Personal del Sandbox para pagar.<br>
-        Email: <strong>valpaypal@dev.com</strong>
-    </div>
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="grid-bg"></div>
+  <div class="scanlines"></div>
+  <div class="hero-center">
+    <div class="hero-badge">competitive tool</div>
+    <div class="hero-title">VAL_Config<span>Pro</span></div>
+    <div class="hero-subtitle">True Stretched · Hz Control · FPS Ultra</div>
+  </div>
+  <div class="hero-overlay"></div>
 </div>
 
+<!-- ── CONTENT ── -->
+<div class="content">
+
+  <!-- Stats -->
+  <div class="specs-grid">
+    <div class="spec-card"><div class="spec-num">360+</div><div class="spec-label">Hz soportados</div></div>
+    <div class="spec-card"><div class="spec-num">0</div><div class="spec-label">Dependencias externas</div></div>
+    <div class="spec-card"><div class="spec-num">3</div><div class="spec-label">Planes disponibles</div></div>
+  </div>
+
+  <!-- Features -->
+  <p class="section-title">Características principales</p>
+  <div class="features-grid">
+    <div class="feature-item">
+      <div class="feature-icon"><i class="ti ti-layout-distribute-horizontal"></i></div>
+      <div class="feature-text"><strong>True Stretched real</strong><span>Resolución personalizada + sync con Windows</span></div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon"><i class="ti ti-refresh"></i></div>
+      <div class="feature-text"><strong>Control nativo de Hz</strong><span>60 / 144 / 240 / 360Hz+ sin software extra</span></div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon"><i class="ti ti-rocket"></i></div>
+      <div class="feature-text"><strong>Panel FPS Ultra</strong><span>Optimización avanzada de rendimiento</span></div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon"><i class="ti ti-brush"></i></div>
+      <div class="feature-text"><strong>Shader Cleaner</strong><span>Elimina stuttering por shaders y logs</span></div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon"><i class="ti ti-users"></i></div>
+      <div class="feature-text"><strong>Multicuenta Riot</strong><span>Gestión completa de múltiples cuentas</span></div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon"><i class="ti ti-lock"></i></div>
+      <div class="feature-text"><strong>Bloqueo de archivos</strong><span>Protección en tiempo real del .ini</span></div>
+    </div>
+  </div>
+
+  <!-- Plans -->
+  <p class="section-title">Elige tu plan</p>
+  <div class="plans">
+    <div class="plan">
+      <div class="plan-name">Basic</div>
+      <div class="plan-price">Free</div>
+      <div class="plan-desc">Para comenzar</div>
+      <ul class="plan-features">
+        <li><i class="ti ti-check check"></i> True Stretched básico</li>
+        <li><i class="ti ti-check check"></i> Resoluciones personalizadas</li>
+        <li><i class="ti ti-check check"></i> UI Premium</li>
+        <li><i class="ti ti-check check"></i> Backups automáticos</li>
+        <li><i class="ti ti-x cross"></i> Sin selector Hz</li>
+        <li><i class="ti ti-x cross"></i> Sin FPS Ultra</li>
+      </ul>
+      <a href="#" class="btn btn-free">Descargar gratis</a>
+    </div>
+
+    <div class="plan featured">
+      <div class="plan-badge">Más popular</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price">$4.99 <span class="orig">$7.99</span></div>
+      <div class="plan-desc">Early supporter — precio especial</div>
+      <ul class="plan-features">
+        <li><i class="ti ti-check check"></i> Todo lo de Basic</li>
+        <li><i class="ti ti-check check"></i> Selector nativo Hz</li>
+        <li><i class="ti ti-check check"></i> Panel FPS Ultra</li>
+        <li><i class="ti ti-check check"></i> Shader Cleaner</li>
+        <li><i class="ti ti-check check"></i> Multicuenta completa</li>
+        <li><i class="ti ti-check check"></i> Actualizaciones futuras</li>
+      </ul>
+      <button class="btn btn-pro" onclick="scrollToPay('pro')">Comprar — $4.99</button>
+    </div>
+
+    <div class="plan">
+      <div class="plan-name">Founder</div>
+      <div class="plan-price">$9.99</div>
+      <div class="plan-desc">Apoya el desarrollo</div>
+      <ul class="plan-features">
+        <li><i class="ti ti-check check"></i> Todo lo de Pro</li>
+        <li><i class="ti ti-check check"></i> Acceso a betas</li>
+        <li><i class="ti ti-check check"></i> Soporte prioritario</li>
+        <li><i class="ti ti-check check"></i> Insignia de fundador</li>
+        <li><i class="ti ti-check check"></i> Funciones exclusivas</li>
+      </ul>
+      <button class="btn btn-founder" onclick="scrollToPay('founder')">Comprar — $9.99</button>
+    </div>
+  </div>
+
+  <!-- ── PASO 1: EMAIL ── -->
+  <p class="section-title">Paso 1 — ¿Dónde enviamos tu clave?</p>
+  <div class="email-form-section">
+    <div class="email-form-header">
+      <div class="email-form-icon"><i class="ti ti-mail"></i></div>
+      <div>
+        <h3>Correo para tu clave de activación</h3>
+        <p>Recibirás tu clave inmediatamente al completar el pago</p>
+      </div>
+    </div>
+    <p class="email-form-desc">
+      Ingresa tu correo electrónico. Al confirmar tu pago en PayPal, te enviaremos automáticamente tu
+      <strong style="color:#a78bfa">clave de activación única</strong> a esta dirección.
+      La clave está vinculada a un solo equipo.
+    </p>
+    <div class="email-input-wrap">
+      <input
+        type="email"
+        id="buyer-email"
+        placeholder="ejemplo@correo.com"
+        autocomplete="email"
+        oninput="onEmailInput()"
+      />
+      <i class="ti ti-check email-check" id="email-check-icon"></i>
+    </div>
+    <div class="email-error" id="email-error">Ingresa un correo válido.</div>
+    <div class="email-confirm-note">
+      <i class="ti ti-shield-lock"></i>
+      Solo usamos tu correo para enviarte la clave. No spam.
+    </div>
+  </div>
+
+  <!-- ── PASO 2: PAGO ── -->
+  <p class="section-title" id="payment-section">Paso 2 — Completa el pago</p>
+  <div class="paypal-section">
+    <div class="paypal-section-header">
+      <div>
+        <strong>Pago seguro vía PayPal</strong>
+        <span>Instantáneo · Sin cuenta requerida · Protegido</span>
+      </div>
+      <div class="plan-price-tag" id="selected-plan-tag">
+        <i class="ti ti-tag"></i> Selecciona un plan
+      </div>
+    </div>
+
+    <!-- Estado bloqueado (sin email) -->
+    <div id="paypal-locked" class="paypal-lock-notice">
+      <i class="ti ti-lock"></i>
+      Ingresa tu correo arriba para desbloquear el pago.
+    </div>
+
+    <!-- Botones PayPal (ocultos hasta que haya email) -->
+    <div id="paypal-unlocked" style="display:none;">
+      <p style="font-size:12px;color:#6b7280;margin-bottom:14px;">
+        Enviando clave a: <strong id="display-email" style="color:#a78bfa;"></strong>
+      </p>
+
+      <!-- Plan Pro -->
+      <div id="section-pro" style="margin-bottom:16px;">
+        <p style="font-size:12px;color:#9ca3af;margin-bottom:8px;font-weight:600;">Plan Pro — $4.99</p>
+        <div id="paypal-buttons-pro"></div>
+      </div>
+
+      <!-- Plan Founder -->
+      <div id="section-founder">
+        <p style="font-size:12px;color:#9ca3af;margin-bottom:8px;font-weight:600;">Plan Founder — $9.99</p>
+        <div id="paypal-buttons-founder"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Discord -->
+  <div class="discord-bar">
+    <div class="icon"><i class="ti ti-brand-discord"></i></div>
+    <div>
+      <strong>¿Dudas o problemas?</strong>
+      <p>Escríbeme en Discord: <strong style="color:#a78bfa">maxpredator</strong></p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── SUCCESS OVERLAY ── -->
+<div id="success-overlay">
+  <div class="success-card">
+    <div class="success-icon">🎉</div>
+    <h2>¡Pago confirmado!</h2>
+    <p>Tu clave de activación fue enviada a:</p>
+    <div class="success-email" id="success-email-display"></div>
+    <p>Revisa tu bandeja de entrada (y la carpeta de spam por si acaso).</p>
+    <p class="success-warning">⚠️ La clave es válida para <strong>un solo equipo</strong>. Actívala en la PC donde usarás el configurador.</p>
+  </div>
+</div>
+
+<!-- Sandbox badge (quitar en producción) -->
+<div class="sandbox-badge">🧪 SANDBOX — PRUEBA</div>
+
+<!-- ── PAYPAL SDK ── -->
+<!-- Reemplaza AY-3IUVuoPTw6f-WMKaIYN3_v5oZb9SCB-PmckxeWmAPNb4i3y9eFo78D5iq2KXhcajvT4TwzX4EpEgL con tu Client ID de PayPal Sandbox -->
 <script src="https://www.paypal.com/sdk/js?client-id=AY-3IUVuoPTw6f-WMKaIYN3_v5oZb9SCB-PmckxeWmAPNb4i3y9eFo78D5iq2KXhcajvT4TwzX4EpEgL&currency=USD&intent=capture"></script>
+
 <script>
+  let emailValidated = false;
+  let buyerEmail = '';
+  const PLANS = {
+    pro:     { label: 'Pro',     price: '4.99', planId: 'pro'     },
+    founder: { label: 'Founder', price: '9.99', planId: 'founder' }
+  };
+
+  /* ── Validación de email ── */
+  function isValidEmail(e) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
+  }
+
+  function onEmailInput() {
+    const input = document.getElementById('buyer-email');
+    const checkIcon = document.getElementById('email-check-icon');
+    const errorMsg  = document.getElementById('email-error');
+    const val = input.value.trim();
+
+    input.classList.remove('valid', 'invalid');
+    checkIcon.style.display = 'none';
+    errorMsg.style.display = 'none';
+
+    if (val === '') {
+      lockPaypal();
+      return;
+    }
+
+    if (isValidEmail(val)) {
+      input.classList.add('valid');
+      checkIcon.style.display = 'block';
+      buyerEmail = val;
+      emailValidated = true;
+      unlockPaypal(val);
+    } else {
+      input.classList.add('invalid');
+      errorMsg.style.display = 'block';
+      emailValidated = false;
+      lockPaypal();
+    }
+  }
+
+  function lockPaypal() {
+    document.getElementById('paypal-locked').style.display = 'block';
+    document.getElementById('paypal-unlocked').style.display = 'none';
+    document.getElementById('selected-plan-tag').innerHTML = '<i class="ti ti-tag"></i> Selecciona un plan';
+  }
+
+  function unlockPaypal(email) {
+    document.getElementById('paypal-locked').style.display = 'none';
+    document.getElementById('paypal-unlocked').style.display = 'block';
+    document.getElementById('display-email').textContent = email;
+    document.getElementById('selected-plan-tag').innerHTML =
+      '<i class="ti ti-check"></i> Listo para pagar';
+  }
+
+  function scrollToPay(plan) {
+    document.getElementById('payment-section').scrollIntoView({ behavior: 'smooth' });
+    if (!emailValidated) {
+      document.getElementById('buyer-email').focus();
+    }
+  }
+
+  /* ── PayPal Buttons ── */
+  function renderPaypalButtons() {
+    // Plan Pro
     paypal.Buttons({
-        style: {
-            color:  'black',
-            shape:  'rect',
-            label:  'pay',
-            height: 45
-        },
+      style: { layout: 'horizontal', color: 'blue', shape: 'rect', label: 'pay', height: 44 },
 
-        createOrder: function(data, actions) {
-            return actions.order.create({
-                purchase_units: [{
-                    description: 'VAL Configurator — Licencia Permanente',
-                    amount: {
-                        currency_code: 'USD',
-                        value: '5.00'
-                    }
-                }]
-            });
-        },
-
-        onApprove: function(data, actions) {
-            return actions.order.capture().then(function(details) {
-                const email = details.payer.email_address;
-                const orderId = details.id;
-
-                document.getElementById('resultado').style.display = 'block';
-                document.getElementById('resultado').className = 'ok';
-                document.getElementById('resultado').innerHTML =
-                    '✅ Pago completado<br><strong>' + email + '</strong><br>Orden: ' + orderId + '<br><br>⏳ Enviando clave al correo...';
-
-                // Notificar al backend (en producción esto lo hace PayPal automáticamente)
-                fetch('https://val-backend-or4y.onrender.com/webhook-paypal', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        event_type: 'PAYMENT.CAPTURE.COMPLETED',
-                        resource: {
-                            id: orderId,
-                            status: 'COMPLETED',
-                            payer: {
-                                email_address: email
-                            },
-                            supplementary_data: {
-                                related_ids: { order_id: orderId }
-                            }
-                        }
-                    })
-                })
-                .then(r => r.json())
-                .then(resp => {
-                    if (resp.status === 'ok') {
-                        document.getElementById('resultado').innerHTML =
-                            '✅ ¡Pago exitoso!<br>Clave generada: <strong>' + resp.clave + '</strong><br>Enviada a: <strong>' + email + '</strong>';
-                    }
-                })
-                .catch(err => {
-                    document.getElementById('resultado').className = 'error';
-                    document.getElementById('resultado').innerHTML = '❌ Error al contactar el servidor: ' + err;
-                });
-            });
-        },
-
-        onError: function(err) {
-            document.getElementById('resultado').style.display = 'block';
-            document.getElementById('resultado').className = 'error';
-            document.getElementById('resultado').innerHTML = '❌ Error en el pago: ' + err;
+      createOrder: function() {
+        if (!emailValidated) {
+          alert('Por favor ingresa tu correo primero.');
+          return;
         }
-    }).render('#paypal-button-container');
+        return fetch('/api/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan: 'pro', email: buyerEmail })
+        })
+        .then(r => r.json())
+        .then(data => data.id);
+      },
+
+      onApprove: function(data) {
+        return fetch('/api/capture-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderID: data.orderID, email: buyerEmail, plan: 'pro' })
+        })
+        .then(r => r.json())
+        .then(result => {
+          if (result.success) showSuccess(buyerEmail);
+          else alert('Error al procesar el pago. Contacta soporte.');
+        });
+      },
+
+      onError: function(err) {
+        console.error('PayPal error:', err);
+        alert('Error en PayPal. Intenta nuevamente.');
+      },
+
+      onCancel: function() {
+        // Usuario canceló — NO se envía ninguna clave
+        console.log('Pago cancelado por el usuario.');
+      }
+    }).render('#paypal-buttons-pro');
+
+    // Plan Founder
+    paypal.Buttons({
+      style: { layout: 'horizontal', color: 'gold', shape: 'rect', label: 'pay', height: 44 },
+
+      createOrder: function() {
+        if (!emailValidated) {
+          alert('Por favor ingresa tu correo primero.');
+          return;
+        }
+        return fetch('/api/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan: 'founder', email: buyerEmail })
+        })
+        .then(r => r.json())
+        .then(data => data.id);
+      },
+
+      onApprove: function(data) {
+        return fetch('/api/capture-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ orderID: data.orderID, email: buyerEmail, plan: 'founder' })
+        })
+        .then(r => r.json())
+        .then(result => {
+          if (result.success) showSuccess(buyerEmail);
+          else alert('Error al procesar el pago. Contacta soporte.');
+        });
+      },
+
+      onError: function(err) {
+        console.error('PayPal error:', err);
+        alert('Error en PayPal. Intenta nuevamente.');
+      },
+
+      onCancel: function() {
+        console.log('Pago cancelado por el usuario.');
+      }
+    }).render('#paypal-buttons-founder');
+  }
+
+  function showSuccess(email) {
+    document.getElementById('success-email-display').textContent = email;
+    document.getElementById('success-overlay').classList.add('show');
+  }
+
+  // Iniciar botones PayPal cuando el SDK cargue
+  window.addEventListener('load', function() {
+    if (typeof paypal !== 'undefined') {
+      renderPaypalButtons();
+    }
+  });
 </script>
+
 </body>
 </html>
