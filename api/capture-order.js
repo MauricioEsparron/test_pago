@@ -10,7 +10,7 @@ const PAYPAL_BASE =
     ? 'https://api-m.paypal.com'
     : 'https://api-m.sandbox.paypal.com';
 
-const RENDER_URL = process.env.RENDER_BACKEND_URL || 'https://val-backend-or4y.onrender.com';
+const RENDER_URL = process.env.RENDER_BACKEND_URL || 'https://val-backend-vercel.vercel.app';
 
 /* ── Helpers ── */
 
