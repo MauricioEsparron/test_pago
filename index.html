@@ -462,7 +462,7 @@
       cursor: pointer;
       z-index: 201;
       animation: compat-bounce 2.4s ease-in-out infinite;
-      transition: background .2s, box-shadow .2s;
+      transition: background .2s, box-shadow .2s, bottom .3s;
     }
     .compat-fab:hover {
       background: rgba(140,100,255,.95);
@@ -471,6 +471,37 @@
     }
     .compat-fab i { font-size: 22px; color: #fff; pointer-events: none; }
     .compat-fab.hidden { display: none; }
+
+    /* ── HELP FAB ── */
+    @keyframes help-bounce {
+      0%, 100% { transform: translateY(0); }
+      40%       { transform: translateY(-10px); }
+      60%       { transform: translateY(-5px); }
+    }
+
+    .help-fab {
+      position: fixed;
+      bottom: 84px;
+      right: 24px;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: rgba(120,80,255,.85);
+      border: 1.5px solid rgba(160,120,255,.5);
+      box-shadow: 0 4px 24px rgba(120,80,255,.45);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      z-index: 201;
+      text-decoration: none;
+      animation: help-bounce 2.4s ease-in-out infinite;
+      transition: background .2s, box-shadow .2s, bottom .3s;
+    }
+    .help-fab:hover {
+      background: rgba(140,100,255,.95);
+      box-shadow: 0 6px 32px rgba(120,80,255,.65);
+      animation: none;
+    }
+    .help-fab i { font-size: 22px; color: #fff; pointer-events: none; }
+    .help-fab.shifted { bottom: 348px; }
 
     .compat-note {
       position: fixed;
@@ -783,6 +814,11 @@
 
 </div>
 
+<!-- ── HELP FAB ── -->
+<a class="help-fab" id="help-fab" href="mailto:mauriciodev.support@gmail.com?subject=Soporte%20VAL_Config%20Pro" title="Contactar soporte">
+  <i class="ti ti-mail"></i>
+</a>
+
 <!-- ── COMPATIBILITY FAB ── -->
 <button class="compat-fab" id="compat-fab" onclick="openCompat()" title="Ver compatibilidad">
   <i class="ti ti-cpu"></i>
@@ -1012,10 +1048,12 @@
   function openCompat() {
     document.getElementById('compat-fab').classList.add('hidden');
     document.getElementById('compat-note').classList.remove('hidden');
+    document.getElementById('help-fab').classList.add('shifted');
   }
   function closeCompat() {
     document.getElementById('compat-note').classList.add('hidden');
     document.getElementById('compat-fab').classList.remove('hidden');
+    document.getElementById('help-fab').classList.remove('shifted');
   }
 
   // Iniciar botones PayPal cuando el SDK cargue
