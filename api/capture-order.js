@@ -12,7 +12,35 @@ const PAYPAL_BASE =
 
 const RENDER_URL = process.env.RENDER_BACKEND_URL || 'https://val-backend-vercel.vercel.app';
 
+// Debe coincidir con las claves de PRICES en create-order.js.
+const PLANES_VALIDOS = ['pro', 'founder'];
+
 /* ── Helpers ── */
+
+/**
+ * Extrae {plan, email} desde el custom_id que devuelve PayPal al capturar
+ * -- ese valor lo fijamos NOSOTROS en create-order.js ("plan|email") al
+ * crear la orden, así que el comprador no puede alterarlo. A diferencia
+ * del plan/email que venga en el body de este mismo request (que sí
+ * podría editarse desde la consola del navegador), esto es lo que
+ * realmente se cobró.
+ */
+function extraerPlanYEmailVerificados(capture) {
+  const customId =
+    capture?.purchase_units?.[0]?.payments?.captures?.[0]?.custom_id ||
+    capture?.purchase_units?.[0]?.custom_id ||
+    '';
+
+  const idxSeparador = customId.indexOf('|');
+  if (idxSeparador === -1) return null;
+
+  const plan = customId.slice(0, idxSeparador);
+  const email = customId.slice(idxSeparador + 1);
+
+  if (!PLANES_VALIDOS.includes(plan) || !email) return null;
+
+  return { plan, email };
+}
 
 async function getAccessToken() {
   const credentials = Buffer.from(
@@ -60,9 +88,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { orderID, email, plan } = req.body;
+  const { orderID } = req.body;
 
-  if (!orderID || !email || !plan) {
+  if (!orderID) {
     return res.status(400).json({ error: 'Parámetros incompletos' });
   }
 
@@ -91,9 +119,20 @@ export default async function handler(req, res) {
       });
     }
 
-    console.log(`✅ Pago COMPLETADO para ${email} | Plan: ${plan} — llamando a Render...`);
+    // 3. Determinar plan/email REALES a partir de lo que PayPal confirma,
+    // no de lo que mande el cliente en este request (ver helper arriba).
+    const verificado = extraerPlanYEmailVerificados(capture);
+    if (!verificado) {
+      console.error('No se pudo verificar plan/email desde PayPal. custom_id recibido:',
+        capture?.purchase_units?.[0]?.payments?.captures?.[0]?.custom_id
+        ?? capture?.purchase_units?.[0]?.custom_id);
+      return res.status(500).json({ error: 'No se pudo verificar la orden.' });
+    }
+    const { plan, email } = verificado;
 
-    // 3. Delegar a Render: genera clave + guarda en BD + envía email
+    console.log(`✅ Pago COMPLETADO para ${email} | Plan verificado: ${plan} — llamando a Render...`);
+
+    // 4. Delegar a Render: genera clave + guarda en BD + envía email
     const result = await procesarPagoEnRender(email, plan);
 
     console.log(`🔑 Render generó clave: ${result.clave} → ${email}`);

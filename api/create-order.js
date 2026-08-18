@@ -1,7 +1,12 @@
 /**
  * POST /api/create-order
  * Crea una orden PayPal y devuelve el orderID al frontend.
- * El email del comprador se guarda en custom_id para recuperarlo al capturar.
+ * El plan y el email del comprador se guardan juntos en custom_id
+ * ("plan|email"), codificados por el servidor en el momento en que se fija
+ * el precio real — así, al capturar (ver capture-order.js), se puede leer
+ * el plan REALMENTE pagado directo de PayPal en vez de confiar en lo que
+ * mande el cliente en ese segundo request (evita pagar Pro y reclamar
+ * Founder editando la llamada desde la consola del navegador).
  */
 
 const PAYPAL_BASE =
@@ -61,7 +66,7 @@ export default async function handler(req, res) {
         intent: 'CAPTURE',
         purchase_units: [
           {
-            custom_id: email,          // guardamos el email aquí
+            custom_id: `${plan}|${email}`,
             description: planData.description,
             amount: {
               currency_code: 'USD',
