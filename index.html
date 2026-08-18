@@ -667,13 +667,13 @@
         <li><i class="ti ti-x cross"></i> Sin selector Hz</li>
         <li><i class="ti ti-x cross"></i> Sin FPS Ultra</li>
       </ul>
-      <a href="https://github.com/user-attachments/files/26991359/ConfiguradorValorant_v1.2.zip" class="btn btn-free" download>Descargar gratis</a>
+      <button class="btn btn-free" disabled>Próximamente</button>
     </div>
 
     <div class="plan featured">
       <div class="plan-badge">Más popular</div>
       <div class="plan-name">Pro</div>
-      <div class="plan-price">$4.99 <span class="orig">$7.99</span></div>
+      <div class="plan-price">$1.99 <span class="orig">$4.99</span></div>
       <div class="plan-desc">Early supporter — precio especial</div>
       <ul class="plan-features">
         <li><i class="ti ti-check check"></i> Todo lo de Basic</li>
@@ -683,12 +683,12 @@
         <li><i class="ti ti-check check"></i> Multicuenta completa</li>
         <li><i class="ti ti-check check"></i> Actualizaciones futuras</li>
       </ul>
-      <button class="btn btn-pro" onclick="scrollToPay('pro')">Comprar — $4.99</button>
+      <button class="btn btn-pro" onclick="scrollToPay('pro')">Comprar — $1.99</button>
     </div>
 
     <div class="plan">
       <div class="plan-name">Founder</div>
-      <div class="plan-price">$9.99</div>
+      <div class="plan-price">$4.99</div>
       <div class="plan-desc">Apoya el desarrollo</div>
       <ul class="plan-features">
         <li><i class="ti ti-check check"></i> Todo lo de Pro</li>
@@ -697,7 +697,7 @@
         <li><i class="ti ti-check check"></i> Insignia de fundador</li>
         <li><i class="ti ti-check check"></i> Funciones exclusivas</li>
       </ul>
-      <button class="btn btn-founder" onclick="scrollToPay('founder')">Comprar — $9.99</button>
+      <button class="btn btn-founder" onclick="scrollToPay('founder')">Comprar — $4.99</button>
     </div>
   </div>
 
@@ -784,7 +784,7 @@
       <!-- Plan Pro -->
       <div id="section-pro" style="display:none;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-          <p style="font-size:13px;color:#e0d9ff;font-weight:600;letter-spacing:.5px;">Plan Pro — $4.99</p>
+          <p style="font-size:13px;color:#e0d9ff;font-weight:600;letter-spacing:.5px;">Plan Pro — $1.99</p>
           <button onclick="clearPlan()" style="background:none;border:none;color:#6b7280;font-size:12px;cursor:pointer;text-decoration:underline;">Cambiar plan</button>
         </div>
         <div id="paypal-buttons-pro"></div>
@@ -793,7 +793,7 @@
       <!-- Plan Founder -->
       <div id="section-founder" style="display:none;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-          <p style="font-size:13px;color:#e0d9ff;font-weight:600;letter-spacing:.5px;">Plan Founder — $9.99</p>
+          <p style="font-size:13px;color:#e0d9ff;font-weight:600;letter-spacing:.5px;">Plan Founder — $4.99</p>
           <button onclick="clearPlan()" style="background:none;border:none;color:#6b7280;font-size:12px;cursor:pointer;text-decoration:underline;">Cambiar plan</button>
         </div>
         <div id="paypal-buttons-founder"></div>
@@ -871,8 +871,8 @@
   let buyerEmail = '';
   let selectedPlan = null;
   const PLANS = {
-    pro:     { label: 'Pro',     price: '4.99', planId: 'pro'     },
-    founder: { label: 'Founder', price: '9.99', planId: 'founder' }
+    pro:     { label: 'Pro',     price: '1.99', planId: 'pro'     },
+    founder: { label: 'Founder', price: '4.99', planId: 'founder' }
   };
 
   /* ── Validación de email ── */

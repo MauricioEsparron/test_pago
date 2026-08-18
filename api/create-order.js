@@ -10,8 +10,8 @@ const PAYPAL_BASE =
     : 'https://api-m.sandbox.paypal.com';
 
 const PRICES = {
-  pro:     { value: '4.99', description: 'VAL_Config Pro — Licencia Pro (Permanente)' },
-  founder: { value: '9.99', description: 'VAL_Config Pro — Licencia Founder (Permanente)' },
+  pro:     { value: '1.99', description: 'VAL_Config Pro — Licencia Pro (Permanente)' },
+  founder: { value: '4.99', description: 'VAL_Config Pro — Licencia Founder (Permanente)' },
 };
 
 async function getAccessToken() {
