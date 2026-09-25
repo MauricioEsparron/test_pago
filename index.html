@@ -344,6 +344,25 @@
 
     #paypal-buttons-pro, #paypal-buttons-founder { min-height: 50px; }
 
+    /* ── FOOTER ── */
+    .site-footer { border-top: 1px solid rgba(255,255,255,.06); background: rgba(0,0,0,.25); }
+    .footer-inner { max-width: 800px; margin: 0 auto; padding: 32px 24px 96px; font-size: 12px; line-height: 1.6; color: #6b7280; }
+    .footer-notice {
+      display: flex; gap: 10px; align-items: flex-start;
+      background: rgba(234,179,8,.06); border: 1px solid rgba(234,179,8,.2);
+      border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; color: #a1a1aa;
+    }
+    .footer-notice i { color: #eab308; font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .footer-notice strong { color: #e8e6f0; }
+    .footer-legal { margin-bottom: 16px; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+    .footer-links a { color: #a78bfa; text-decoration: none; }
+    .footer-links a:hover { text-decoration: underline; }
+    .footer-links span { color: #374151; }
+    .footer-copy { color: #4b5563; }
+    .terms-consent { font-size: 11px; color: #6b7280; margin-top: 12px; text-align: center; }
+    .terms-consent a { color: #a78bfa; }
+
     /* ── PROMO COUNTDOWN ── */
     .promo-banner {
       background: linear-gradient(135deg, rgba(124,58,237,.18), rgba(168,85,247,.08));
@@ -853,6 +872,8 @@
         </div>
         <div id="paypal-buttons-founder"></div>
       </div>
+
+      <p class="terms-consent">Al completar la compra aceptas los <a href="/terminos.html" target="_blank" rel="noopener">Términos y condiciones</a>.</p>
     </div>
   </div>
 
@@ -868,6 +889,27 @@
   </a>
 
 </div>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-notice">
+      <i class="ti ti-alert-triangle"></i>
+      <span><strong>Uso bajo tu propio riesgo.</strong> VAL_Config Pro solo modifica archivos de configuración y ajustes de Windows: no inyecta código, no lee ni altera la memoria del juego y no automatiza acciones dentro de él. Aun así, Riot Games decide qué software permite y puede cambiar sus políticas en cualquier momento, por lo que no nos hacemos responsables de suspensiones, baneos o restricciones de cuentas.</span>
+    </p>
+    <p class="footer-legal">
+      VAL_Config Pro no está respaldado por Riot Games y no refleja las opiniones de Riot Games ni de nadie oficialmente involucrado en la producción o gestión de sus propiedades. Riot Games, VALORANT y todas las propiedades asociadas son marcas comerciales o marcas registradas de Riot Games, Inc.
+    </p>
+    <nav class="footer-links">
+      <a href="/terminos.html">Términos y condiciones</a>
+      <span>·</span>
+      <a href="mailto:mauriciodev.support@gmail.com?subject=Soporte%20VAL_Config%20Pro">Soporte</a>
+      <span>·</span>
+      <a href="https://discord.gg/tF3FJwwbau" target="_blank" rel="noopener noreferrer">Discord</a>
+    </nav>
+    <p class="footer-copy">© 2026 VAL_Config Pro. Todos los derechos reservados.</p>
+  </div>
+</footer>
 
 <!-- ── HELP FAB ── -->
 <a class="help-fab" id="help-fab" href="mailto:mauriciodev.support@gmail.com?subject=Soporte%20VAL_Config%20Pro" title="Contactar soporte">
