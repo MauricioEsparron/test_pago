@@ -344,6 +344,38 @@
 
     #paypal-buttons-pro, #paypal-buttons-founder { min-height: 50px; }
 
+    /* ── PROMO COUNTDOWN ── */
+    .promo-banner {
+      background: linear-gradient(135deg, rgba(124,58,237,.18), rgba(168,85,247,.08));
+      border: 1px solid rgba(139,92,246,.45);
+      border-radius: 16px;
+      padding: 18px 22px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .promo-text strong { display: block; font-family: 'Rajdhani', sans-serif; font-size: 18px; color: #fff; letter-spacing: .5px; }
+    .promo-text span { font-size: 12px; color: #a1a1aa; }
+    .promo-timer { display: flex; gap: 8px; }
+    .promo-unit {
+      min-width: 58px;
+      text-align: center;
+      background: rgba(0,0,0,.35);
+      border: 1px solid rgba(139,92,246,.3);
+      border-radius: 10px;
+      padding: 8px 6px;
+    }
+    .promo-unit b { display: block; font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: 700; color: #fff; line-height: 1; font-variant-numeric: tabular-nums; }
+    .promo-unit small { font-size: 10px; color: #8b5cf6; text-transform: uppercase; letter-spacing: 1px; }
+    .plan-price .next { display: block; font-size: 12px; color: #a78bfa; font-weight: 600; margin-top: 2px; }
+    @media (max-width: 480px) {
+      .promo-timer { width: 100%; justify-content: space-between; }
+      .promo-unit { flex: 1; min-width: 0; }
+    }
+
     .plan-price-tag {
       display: inline-flex;
       align-items: center;
@@ -650,10 +682,33 @@
       <div class="feature-icon"><i class="ti ti-lock"></i></div>
       <div class="feature-text"><strong>Bloqueo de archivos</strong><span>Protección en tiempo real del .ini</span></div>
     </div>
+    <div class="feature-item">
+      <div class="feature-icon"><i class="ti ti-world"></i></div>
+      <div class="feature-text"><strong>Configuración de DNS</strong><span>Cloudflare, Google, Quad9 y OpenDNS en un clic</span></div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon"><i class="ti ti-trophy"></i></div>
+      <div class="feature-text"><strong>Presets de pro players</strong><span>600+ configuraciones de jugadores profesionales</span></div>
+    </div>
   </div>
 
   <!-- Plans -->
   <p class="section-title">Elige tu plan</p>
+
+  <!-- Contador de promo (se oculta solo al terminar) -->
+  <div class="promo-banner" id="promo-banner">
+    <div class="promo-text">
+      <strong><i class="ti ti-clock-hour-4"></i> Precio early supporter por tiempo limitado</strong>
+      <span>El 1 de octubre sube a $20 (Pro) y $21.99 (Founder). Termina el 30 sep, 23:59 UTC.</span>
+    </div>
+    <div class="promo-timer" aria-live="off">
+      <div class="promo-unit"><b id="cd-d">00</b><small>días</small></div>
+      <div class="promo-unit"><b id="cd-h">00</b><small>horas</small></div>
+      <div class="promo-unit"><b id="cd-m">00</b><small>min</small></div>
+      <div class="promo-unit"><b id="cd-s">00</b><small>seg</small></div>
+    </div>
+  </div>
+
   <div class="plans">
     <div class="plan">
       <div class="plan-name">Basic</div>
@@ -673,8 +728,8 @@
     <div class="plan featured">
       <div class="plan-badge">Más popular</div>
       <div class="plan-name">Pro</div>
-      <div class="plan-price">$1.99 <span class="orig">$4.99</span></div>
-      <div class="plan-desc">Early supporter — precio especial</div>
+      <div class="plan-price" id="price-pro">$1.99 <span class="next">Desde el 1 oct: $20</span></div>
+      <div class="plan-desc" id="desc-pro">Early supporter — precio especial</div>
       <ul class="plan-features">
         <li><i class="ti ti-check check"></i> Todo lo de Basic</li>
         <li><i class="ti ti-check check"></i> Selector nativo Hz</li>
@@ -683,12 +738,12 @@
         <li><i class="ti ti-check check"></i> Multicuenta completa</li>
         <li><i class="ti ti-check check"></i> Actualizaciones futuras</li>
       </ul>
-      <button class="btn btn-pro" onclick="scrollToPay('pro')">Comprar — $1.99</button>
+      <button class="btn btn-pro" id="btn-pro" onclick="scrollToPay('pro')">Comprar — $1.99</button>
     </div>
 
     <div class="plan">
       <div class="plan-name">Founder</div>
-      <div class="plan-price">$4.99</div>
+      <div class="plan-price" id="price-founder">$4.99 <span class="next">Desde el 1 oct: $21.99</span></div>
       <div class="plan-desc">Apoya el desarrollo</div>
       <ul class="plan-features">
         <li><i class="ti ti-check check"></i> Todo lo de Pro</li>
@@ -697,7 +752,7 @@
         <li><i class="ti ti-check check"></i> Insignia de fundador</li>
         <li><i class="ti ti-check check"></i> Funciones exclusivas</li>
       </ul>
-      <button class="btn btn-founder" onclick="scrollToPay('founder')">Comprar — $4.99</button>
+      <button class="btn btn-founder" id="btn-founder" onclick="scrollToPay('founder')">Comprar — $4.99</button>
     </div>
   </div>
 
@@ -784,7 +839,7 @@
       <!-- Plan Pro -->
       <div id="section-pro" style="display:none;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-          <p style="font-size:13px;color:#e0d9ff;font-weight:600;letter-spacing:.5px;">Plan Pro — $1.99</p>
+          <p id="label-pro" style="font-size:13px;color:#e0d9ff;font-weight:600;letter-spacing:.5px;">Plan Pro — $1.99</p>
           <button onclick="clearPlan()" style="background:none;border:none;color:#6b7280;font-size:12px;cursor:pointer;text-decoration:underline;">Cambiar plan</button>
         </div>
         <div id="paypal-buttons-pro"></div>
@@ -793,7 +848,7 @@
       <!-- Plan Founder -->
       <div id="section-founder" style="display:none;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-          <p style="font-size:13px;color:#e0d9ff;font-weight:600;letter-spacing:.5px;">Plan Founder — $4.99</p>
+          <p id="label-founder" style="font-size:13px;color:#e0d9ff;font-weight:600;letter-spacing:.5px;">Plan Founder — $4.99</p>
           <button onclick="clearPlan()" style="background:none;border:none;color:#6b7280;font-size:12px;cursor:pointer;text-decoration:underline;">Cambiar plan</button>
         </div>
         <div id="paypal-buttons-founder"></div>
@@ -807,7 +862,7 @@
       <div class="icon"><i class="ti ti-brand-discord"></i></div>
       <div>
         <strong>¿Dudas o problemas? Únete al servidor</strong>
-        <p>Discord: <strong style="color:#a78bfa">maxpredator</strong> · Haz clic para entrar al servidor</p>
+        <p>Haz clic para entrar al servidor de Discord</p>
       </div>
     </div>
   </a>
@@ -874,6 +929,64 @@
     pro:     { label: 'Pro',     price: '1.99', planId: 'pro'     },
     founder: { label: 'Founder', price: '4.99', planId: 'founder' }
   };
+
+  /* ── Promo / contador ──
+     Debe coincidir con api/_pricing.js (el servidor es quien cobra).
+     /api/prices corrige el reloj del visitante con la hora del servidor. */
+  const PROMO = {
+    end: Date.UTC(2026, 9, 1, 0, 0, 0), // 30 sep 23:59:59 UTC
+    regular: { pro: '20.00', founder: '21.99' }
+  };
+  let clockOffset = 0;
+  let countdownTimer = null;
+
+  function fmtPrice(p) {
+    return '$' + String(p).replace(/\.00$/, '');
+  }
+
+  function applyRegularPricing() {
+    ['pro', 'founder'].forEach(plan => {
+      const price = fmtPrice(PROMO.regular[plan]);
+      PLANS[plan].price = PROMO.regular[plan].replace(/\.00$/, '');
+      document.getElementById('price-' + plan).textContent = price;
+      document.getElementById('btn-' + plan).textContent = 'Comprar — ' + price;
+      document.getElementById('label-' + plan).textContent = `Plan ${PLANS[plan].label} — ${price}`;
+    });
+    document.getElementById('desc-pro').textContent = 'Licencia permanente';
+    document.getElementById('promo-banner').style.display = 'none';
+    if (selectedPlan) selectPlan(selectedPlan);
+  }
+
+  function tickCountdown() {
+    const left = PROMO.end - (Date.now() + clockOffset);
+    if (left <= 0) {
+      clearInterval(countdownTimer);
+      applyRegularPricing();
+      return;
+    }
+    const s = Math.floor(left / 1000);
+    const pad = n => String(n).padStart(2, '0');
+    document.getElementById('cd-d').textContent = pad(Math.floor(s / 86400));
+    document.getElementById('cd-h').textContent = pad(Math.floor(s % 86400 / 3600));
+    document.getElementById('cd-m').textContent = pad(Math.floor(s % 3600 / 60));
+    document.getElementById('cd-s').textContent = pad(s % 60);
+  }
+
+  function startCountdown() {
+    tickCountdown();
+    countdownTimer = setInterval(tickCountdown, 1000);
+    fetch('/api/prices', { cache: 'no-store' })
+      .then(r => r.json())
+      .then(data => {
+        if (typeof data.serverNow === 'number') clockOffset = data.serverNow - Date.now();
+        if (typeof data.promoEnd === 'number') PROMO.end = data.promoEnd;
+        if (data.regularPrices) PROMO.regular = data.regularPrices;
+        tickCountdown();
+      })
+      .catch(() => {}); // sin API se usa el reloj local; el cobro real lo decide el servidor
+  }
+
+  startCountdown();
 
   /* ── Validación de email ── */
   function isValidEmail(e) {

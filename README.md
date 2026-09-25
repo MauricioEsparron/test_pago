@@ -57,10 +57,15 @@ Crea una orden en PayPal y devuelve el `orderID` al frontend.
 
 Planes disponibles:
 
-| Plan | Precio | Tipo de licencia |
-|---|---|---|
-| `pro` | $4.99 USD | Pro (Permanente) |
-| `founder` | $9.99 USD | Founder/Supporter (Permanente) |
+| Plan | Promo (hasta 30 sep 2026 23:59 UTC) | Desde 1 oct 2026 | Tipo de licencia |
+|---|---|---|---|
+| `pro` | $1.99 USD | $20.00 USD | Pro (Permanente) |
+| `founder` | $4.99 USD | $21.99 USD | Founder/Supporter (Permanente) |
+
+Los precios y la fecha de corte viven en `api/_pricing.js`; el servidor aplica
+el precio vigente al crear la orden. `GET /api/prices` expone los precios y la
+hora del servidor para el contador de `index.html` (cuyos valores por defecto
+deben coincidir con `_pricing.js`).
 
 ---
 

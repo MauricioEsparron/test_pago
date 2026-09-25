@@ -14,9 +14,12 @@ const PAYPAL_BASE =
     ? 'https://api-m.paypal.com'
     : 'https://api-m.sandbox.paypal.com';
 
+import { getPrices } from './_pricing.js';
+
+// El monto sale de _pricing.js en cada request (promo hasta el 30 sep UTC).
 const PRICES = {
-  pro:     { value: '1.99', description: 'VAL_Config Pro — Licencia Pro (Permanente)' },
-  founder: { value: '4.99', description: 'VAL_Config Pro — Licencia Founder (Permanente)' },
+  pro:     { description: 'VAL_Config Pro — Licencia Pro (Permanente)' },
+  founder: { description: 'VAL_Config Pro — Licencia Founder (Permanente)' },
 };
 
 async function getAccessToken() {
@@ -54,7 +57,7 @@ export default async function handler(req, res) {
 
   try {
     const accessToken = await getAccessToken();
-    const planData = PRICES[plan];
+    const planData = { ...PRICES[plan], value: getPrices()[plan] };
 
     const orderRes = await fetch(`${PAYPAL_BASE}/v2/checkout/orders`, {
       method: 'POST',
