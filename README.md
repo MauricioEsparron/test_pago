@@ -57,7 +57,7 @@ Crea una orden en PayPal y devuelve el `orderID` al frontend.
 
 Planes disponibles:
 
-| Plan | Promo (hasta 30 sep 2026 23:59 UTC) | Desde 1 oct 2026 | Tipo de licencia |
+| Plan | Promo (hasta 15 oct 2026 23:59 UTC) | Desde 16 oct 2026 | Tipo de licencia |
 |---|---|---|---|
 | `pro` | $1.99 USD | $20.00 USD | Pro (Permanente) |
 | `founder` | $4.99 USD | $21.99 USD | Founder/Supporter (Permanente) |

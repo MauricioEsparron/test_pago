@@ -16,7 +16,7 @@ const PAYPAL_BASE =
 
 import { getPrices } from './_pricing.js';
 
-// El monto sale de _pricing.js en cada request (promo hasta el 30 sep UTC).
+// El monto sale de _pricing.js en cada request (promo hasta el 15 oct UTC).
 const PRICES = {
   pro:     { description: 'VAL_Config Pro — Licencia Pro (Permanente)' },
   founder: { description: 'VAL_Config Pro — Licencia Founder (Permanente)' },
