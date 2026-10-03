@@ -648,7 +648,7 @@
       left: 50%;
       transform: translateX(-50%);
       z-index: 90;
-      width: min(960px, calc(100% - 24px));
+      width: min(1040px, calc(100% - 24px));
       display: flex;
       align-items: center;
       gap: 12px;
@@ -693,6 +693,53 @@
     .topnav-link i { font-size: 16px; color: #8b5cf6; }
     .topnav-link .ext { font-size: 12px; color: #6b7280; }
     .topnav-sep { width: 1px; height: 20px; background: rgba(255,255,255,.1); margin: 0 6px; }
+    /* Etiqueta FREE en la esquina superior derecha de las herramientas gratis */
+    .topnav-link.is-free { position: relative; }
+    .free-badge {
+      position: absolute;
+      top: 0;
+      right: 2px;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      line-height: 1;
+      color: #22c55e;
+      pointer-events: none;
+    }
+    /* Desplegable "Más" con otras creaciones */
+    .topnav-more { position: relative; }
+    .topnav-more-btn { border: 0; background: transparent; font-family: inherit; cursor: pointer; }
+    .topnav-more-btn .ext { transition: transform .15s; }
+    .topnav-more:hover .topnav-more-btn .ext,
+    .topnav-more.open .topnav-more-btn .ext { transform: rotate(180deg); }
+    .topnav-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 230px;
+      display: none;
+      flex-direction: column;
+      gap: 2px;
+      padding: 6px;
+      border: 1px solid rgba(139,92,246,.3);
+      border-radius: 12px;
+      background: rgba(12,11,20,.97);
+      box-shadow: 0 12px 30px rgba(0,0,0,.5);
+    }
+    /* Puente invisible para que el hover no se pierda entre botón y menú */
+    .topnav-menu::before { content: ''; position: absolute; left: 0; right: 0; top: -9px; height: 9px; }
+    .topnav-more:hover .topnav-menu,
+    .topnav-more:focus-within .topnav-menu,
+    .topnav-more.open .topnav-menu { display: flex; }
+    .topnav-menu-title {
+      padding: 6px 10px 4px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #6b7280;
+    }
+    .topnav-menu .topnav-link { padding: 10px; }
     .topnav-cta {
       margin-left: 6px;
       padding: 9px 16px;
@@ -721,8 +768,8 @@
     [id="caracteristicas"], [id="planes"], [id="herramientas"] { scroll-margin-top: 90px; }
     html { scroll-behavior: smooth; }
 
-    /* Con 6 enlaces la barra completa necesita ~1040px; por debajo, menú ☰. */
-    @media (max-width: 1040px) {
+    /* Con 7 enlaces la barra completa necesita ~1120px; por debajo, menú ☰. */
+    @media (max-width: 1120px) {
       .topnav { flex-wrap: wrap; padding: 8px 8px 8px 16px; }
       .topnav-toggle { display: inline-grid; place-items: center; }
       .topnav-links {
@@ -739,6 +786,12 @@
       .topnav-link { padding: 11px 10px; font-size: 14px; }
       .topnav-sep { width: auto; height: 1px; margin: 4px 0; }
       .topnav-cta { margin: 6px 0 2px; text-align: center; padding: 11px; }
+      .topnav-link.is-free { align-self: flex-start; padding-right: 34px; }
+      .free-badge { top: 50%; transform: translateY(-50%); right: 0; }
+      .topnav-more-btn { display: none; }
+      .topnav-menu { position: static; display: flex; min-width: 0; padding: 0; border: 0; background: none; box-shadow: none; }
+      .topnav-menu::before { display: none; }
+      .topnav-menu-title { padding: 8px 10px 2px; }
     }
 
     /* ── HERRAMIENTAS GRATUITAS (aim.valconfig.store) ── */
@@ -797,10 +850,17 @@
     <a class="topnav-link" href="#caracteristicas">Características</a>
     <a class="topnav-link" href="#planes">Planes</a>
     <span class="topnav-sep" aria-hidden="true"></span>
-    <a class="topnav-link" href="https://aim.valconfig.store/trainer?utm_source=valconfig_store&amp;utm_medium=nav" target="_blank" rel="noopener"><i class="ti ti-target"></i> Aim Trainer <i class="ti ti-arrow-up-right ext"></i></a>
-    <a class="topnav-link" href="https://aim.valconfig.store/miras?utm_source=valconfig_store&amp;utm_medium=nav" target="_blank" rel="noopener"><i class="ti ti-focus-2"></i> Miras <i class="ti ti-arrow-up-right ext"></i></a>
-    <a class="topnav-link" href="https://aim.valconfig.store/sens?utm_source=valconfig_store&amp;utm_medium=nav" target="_blank" rel="noopener"><i class="ti ti-mouse"></i> Sensibilidad <i class="ti ti-arrow-up-right ext"></i></a>
-    <a class="topnav-link" href="https://aim.valconfig.store/estirada?utm_source=valconfig_store&amp;utm_medium=nav" target="_blank" rel="noopener"><i class="ti ti-arrows-horizontal"></i> Res estirada <i class="ti ti-arrow-up-right ext"></i></a>
+    <a class="topnav-link is-free" href="https://aim.valconfig.store/trainer?utm_source=valconfig_store&amp;utm_medium=nav" target="_blank" rel="noopener"><i class="ti ti-target"></i> Aim Trainer <i class="ti ti-arrow-up-right ext"></i><span class="free-badge">FREE</span></a>
+    <a class="topnav-link is-free" href="https://aim.valconfig.store/miras?utm_source=valconfig_store&amp;utm_medium=nav" target="_blank" rel="noopener"><i class="ti ti-focus-2"></i> Miras <i class="ti ti-arrow-up-right ext"></i><span class="free-badge">FREE</span></a>
+    <a class="topnav-link is-free" href="https://aim.valconfig.store/sens?utm_source=valconfig_store&amp;utm_medium=nav" target="_blank" rel="noopener"><i class="ti ti-mouse"></i> Sensibilidad <i class="ti ti-arrow-up-right ext"></i><span class="free-badge">FREE</span></a>
+    <a class="topnav-link is-free" href="https://aim.valconfig.store/estirada?utm_source=valconfig_store&amp;utm_medium=nav" target="_blank" rel="noopener"><i class="ti ti-arrows-horizontal"></i> Res estirada <i class="ti ti-arrow-up-right ext"></i><span class="free-badge">FREE</span></a>
+    <div class="topnav-more" id="topnav-more">
+      <button class="topnav-link topnav-more-btn" type="button" aria-expanded="false" aria-controls="topnav-menu"><i class="ti ti-apps"></i> Más <i class="ti ti-chevron-down ext"></i></button>
+      <div class="topnav-menu" id="topnav-menu">
+        <span class="topnav-menu-title">Otras creaciones</span>
+        <a class="topnav-link is-free" href="https://convert.valconfig.store/?utm_source=valconfig_store&amp;utm_medium=nav" target="_blank" rel="noopener"><i class="ti ti-video"></i> Conversor de video <i class="ti ti-arrow-up-right ext"></i><span class="free-badge">FREE</span></a>
+      </div>
+    </div>
     <a class="topnav-cta" href="#planes">Comprar</a>
   </div>
 </nav>
@@ -1091,6 +1151,8 @@
       <a href="https://aim.valconfig.store/?utm_source=valconfig_store&amp;utm_medium=footer" target="_blank" rel="noopener">Herramientas gratis</a>
       <span>·</span>
       <a href="https://aim.valconfig.store/estirada?utm_source=valconfig_store&amp;utm_medium=footer" target="_blank" rel="noopener">Simulador de res estirada</a>
+      <span>·</span>
+      <a href="https://convert.valconfig.store/?utm_source=valconfig_store&amp;utm_medium=footer" target="_blank" rel="noopener">Conversor de video</a>
     </nav>
     <p class="footer-copy">© 2026 VAL_Config Pro. Todos los derechos reservados.</p>
   </div>
@@ -1419,6 +1481,14 @@
     toggle.addEventListener('click', () => setOpen(!nav.classList.contains('open')));
     // Cerrar el menú al elegir un enlace
     nav.querySelectorAll('.topnav-links a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+
+    // Desplegable "Más": clic para pantallas táctiles, Escape o clic fuera para cerrar
+    const more = document.getElementById('topnav-more');
+    const moreBtn = more.querySelector('.topnav-more-btn');
+    const setMore = (open) => { more.classList.toggle('open', open); moreBtn.setAttribute('aria-expanded', String(open)); };
+    moreBtn.addEventListener('click', () => setMore(!more.classList.contains('open')));
+    document.addEventListener('click', (e) => { if (!more.contains(e.target)) setMore(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { setMore(false); moreBtn.blur(); } });
   })();
 </script>
 
