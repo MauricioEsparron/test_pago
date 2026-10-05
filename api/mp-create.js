@@ -37,7 +37,9 @@ export default async function handler(req, res) {
           currency_id: 'PEN',
           unit_price: Number(getPricesPEN()[plan]),
         }],
-        payer: { email },
+        // Sin payer.email: si se prellena con el email real y las credenciales son de
+        // prueba, Mercado Pago rechaza el pago. La clave va al email de la tienda,
+        // que viaja en external_reference.
         external_reference: `${plan}|${email}`,
         back_urls: {
           success: `${origin}/?mp=ok`,
