@@ -4,7 +4,7 @@
  * del frontend no dependa del reloj de la PC del visitante.
  */
 
-import { PROMO_END, isPromoActive, getPrices, REGULAR_PRICES } from './_pricing.js';
+import { PROMO_END, isPromoActive, getPrices, getPricesPEN, REGULAR_PRICES, REGULAR_PRICES_PEN } from './_pricing.js';
 
 export default function handler(req, res) {
   if (req.method !== 'GET') {
@@ -19,5 +19,7 @@ export default function handler(req, res) {
     promoActive: isPromoActive(now),
     prices: getPrices(now),
     regularPrices: REGULAR_PRICES,
+    pricesPEN: getPricesPEN(now),
+    regularPricesPEN: REGULAR_PRICES_PEN,
   });
 }

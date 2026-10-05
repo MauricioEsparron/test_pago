@@ -343,6 +343,17 @@
     .paypal-lock-notice i { display: block; font-size: 28px; color: #4b5563; margin-bottom: 8px; }
 
     #paypal-buttons-pro, #paypal-buttons-founder { min-height: 50px; }
+    .mp-or { display: flex; align-items: center; gap: 10px; margin: 12px 0 10px; color: #6b7280; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+    .mp-or::before, .mp-or::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,.08); }
+    .mp-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 44px;
+      border: none; border-radius: 4px; background: #009ee3; color: #fff; cursor: pointer;
+      font-family: 'Inter', Arial, sans-serif; font-size: 15px; font-weight: 600; transition: background .15s;
+    }
+    .mp-btn:hover { background: #0089c7; }
+    .mp-btn:disabled { opacity: .6; cursor: wait; }
+    .mp-btn small { font-weight: 500; opacity: .85; }
+    .mp-note { margin: 6px 0 0; text-align: center; font-size: 11px; color: #6b7280; }
 
     /* ── FOOTER ── */
     .site-footer { border-top: 1px solid rgba(255,255,255,.06); background: rgba(0,0,0,.25); }
@@ -1043,8 +1054,8 @@
   <div class="paypal-section">
     <div class="paypal-section-header">
       <div>
-        <strong>Pago seguro con PayPal o tarjeta</strong>
-        <span>Débito o crédito · Sin cuenta de PayPal · Instantáneo</span>
+        <strong>Pago seguro con PayPal, tarjeta o Mercado Pago</strong>
+        <span>Dólares o soles · Sin cuenta de PayPal · Instantáneo</span>
       </div>
       <div class="plan-price-tag" id="selected-plan-tag">
         <i class="ti ti-tag"></i> Selecciona un plan
@@ -1076,6 +1087,11 @@
           <button onclick="clearPlan()" style="background:none;border:none;color:#6b7280;font-size:12px;cursor:pointer;text-decoration:underline;">Cambiar plan</button>
         </div>
         <div id="paypal-buttons-pro"></div>
+        <div class="mp-or">o paga en soles</div>
+        <button class="mp-btn" type="button" id="mp-btn-pro" onclick="payWithMP('pro')">
+          Pagar con Mercado Pago <small id="mp-price-pro">S/ 7.50</small>
+        </button>
+        <p class="mp-note">Tarjetas peruanas y saldo de Mercado Pago</p>
       </div>
 
       <!-- Plan Founder -->
@@ -1085,6 +1101,11 @@
           <button onclick="clearPlan()" style="background:none;border:none;color:#6b7280;font-size:12px;cursor:pointer;text-decoration:underline;">Cambiar plan</button>
         </div>
         <div id="paypal-buttons-founder"></div>
+        <div class="mp-or">o paga en soles</div>
+        <button class="mp-btn" type="button" id="mp-btn-founder" onclick="payWithMP('founder')">
+          Pagar con Mercado Pago <small id="mp-price-founder">S/ 18.90</small>
+        </button>
+        <p class="mp-note">Tarjetas peruanas y saldo de Mercado Pago</p>
       </div>
 
       <p class="terms-consent">Al completar la compra aceptas los <a href="/terminos.html" target="_blank" rel="noopener">Términos y condiciones</a>.</p>
@@ -1270,6 +1291,12 @@
         if (typeof data.serverNow === 'number') clockOffset = data.serverNow - Date.now();
         if (typeof data.promoEnd === 'number') PROMO.end = data.promoEnd;
         if (data.regularPrices) PROMO.regular = data.regularPrices;
+        if (data.pricesPEN) {
+          for (const p of ['pro', 'founder']) {
+            const el = document.getElementById('mp-price-' + p);
+            if (el && data.pricesPEN[p]) el.textContent = 'S/ ' + data.pricesPEN[p];
+          }
+        }
         tickCountdown();
       })
       .catch(() => {}); // sin API se usa el reloj local; el cobro real lo decide el servidor
@@ -1441,6 +1468,58 @@
       }
     }).render('#paypal-buttons-founder');
   }
+
+  /* ── Mercado Pago (Checkout Pro) ── */
+  async function payWithMP(plan) {
+    if (!emailValidated) { alert('Por favor ingresa tu correo primero.'); return; }
+    const btn = document.getElementById('mp-btn-' + plan);
+    btn.disabled = true;
+    try {
+      const r = await fetch('/api/mp-create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan, email: buyerEmail })
+      });
+      const data = await r.json();
+      if (!r.ok || !data.url) throw new Error(data.error || 'Error');
+      window.location.href = data.url;
+    } catch (e) {
+      btn.disabled = false;
+      alert('No se pudo iniciar el pago con Mercado Pago. Inténtalo de nuevo o paga con PayPal.');
+    }
+  }
+
+  // Al volver de Mercado Pago: ?mp=ok|pendiente|error&payment_id=…
+  (function handleMPReturn() {
+    const q = new URLSearchParams(location.search);
+    const estado = q.get('mp');
+    if (!estado) return;
+    const paymentId = q.get('payment_id') || q.get('collection_id');
+    history.replaceState(null, '', location.pathname + '#planes');
+    if (estado === 'pendiente') {
+      alert('Tu pago está pendiente. Cuando Mercado Pago lo apruebe te enviaremos la clave a tu correo.');
+      return;
+    }
+    if (estado !== 'ok' || !paymentId) {
+      alert('El pago no se completó y no se te cobró nada. Puedes intentarlo de nuevo.');
+      return;
+    }
+    fetch('/api/mp-confirm', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ payment_id: paymentId })
+    })
+      .then(r => r.json())
+      .then(out => {
+        if (out.status === 'approved') showSuccess(out.email);
+        else if (out.status === 'pending' || out.status === 'in_process') {
+          alert('Tu pago está en revisión. Cuando se apruebe te enviaremos la clave a tu correo.');
+        } else {
+          alert('No pudimos confirmar tu pago. Si se te cobró, escríbenos a mauriciodev.support@gmail.com con tu número de operación: ' + paymentId);
+        }
+      })
+      .catch(() => alert('No pudimos confirmar tu pago ahora mismo. Si se te cobró, te llegará la clave por correo en unos minutos.'));
+  })();
 
   function showSuccess(email) {
     document.getElementById('success-email-display').textContent = email;
