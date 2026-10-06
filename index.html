@@ -1028,7 +1028,7 @@
       </div>
     </div>
     <p class="email-form-desc">
-      Ingresa tu correo electrónico. Al confirmar tu pago en PayPal, te enviaremos automáticamente tu
+      Ingresa tu correo electrónico. Al confirmar tu pago, te enviaremos automáticamente tu
       <strong style="color:#a78bfa">clave de activación única</strong> a esta dirección.
       La clave está vinculada a un solo equipo.
     </p>
@@ -1055,7 +1055,7 @@
     <div class="paypal-section-header">
       <div>
         <strong>Pago seguro con PayPal, tarjeta o Mercado Pago</strong>
-        <span>Dólares o soles · Sin cuenta de PayPal · Instantáneo</span>
+        <span>PayPal, tarjeta, Yape y más · Instantáneo</span>
       </div>
       <div class="plan-price-tag" id="selected-plan-tag">
         <i class="ti ti-tag"></i> Selecciona un plan
@@ -1087,11 +1087,11 @@
           <button onclick="clearPlan()" style="background:none;border:none;color:#6b7280;font-size:12px;cursor:pointer;text-decoration:underline;">Cambiar plan</button>
         </div>
         <div id="paypal-buttons-pro"></div>
-        <div class="mp-or">o paga en soles</div>
+        <div class="mp-or">o también</div>
         <button class="mp-btn" type="button" id="mp-btn-pro" onclick="payWithMP('pro')">
-          Pagar con Mercado Pago <small id="mp-price-pro">S/ 7.50</small>
+          Otros métodos de pago <small id="mp-price-pro">$1.99</small>
         </button>
-        <p class="mp-note">Tarjetas peruanas y saldo de Mercado Pago</p>
+        <p class="mp-note">Yape, tarjetas peruanas, banca y agentes vía Mercado Pago · se cobra el equivalente en soles</p>
       </div>
 
       <!-- Plan Founder -->
@@ -1101,11 +1101,11 @@
           <button onclick="clearPlan()" style="background:none;border:none;color:#6b7280;font-size:12px;cursor:pointer;text-decoration:underline;">Cambiar plan</button>
         </div>
         <div id="paypal-buttons-founder"></div>
-        <div class="mp-or">o paga en soles</div>
+        <div class="mp-or">o también</div>
         <button class="mp-btn" type="button" id="mp-btn-founder" onclick="payWithMP('founder')">
-          Pagar con Mercado Pago <small id="mp-price-founder">S/ 18.90</small>
+          Otros métodos de pago <small id="mp-price-founder">$4.99</small>
         </button>
-        <p class="mp-note">Tarjetas peruanas y saldo de Mercado Pago</p>
+        <p class="mp-note">Yape, tarjetas peruanas, banca y agentes vía Mercado Pago · se cobra el equivalente en soles</p>
       </div>
 
       <p class="terms-consent">Al completar la compra aceptas los <a href="/terminos.html" target="_blank" rel="noopener">Términos y condiciones</a>.</p>
@@ -1291,10 +1291,10 @@
         if (typeof data.serverNow === 'number') clockOffset = data.serverNow - Date.now();
         if (typeof data.promoEnd === 'number') PROMO.end = data.promoEnd;
         if (data.regularPrices) PROMO.regular = data.regularPrices;
-        if (data.pricesPEN) {
+        if (data.prices) {
           for (const p of ['pro', 'founder']) {
             const el = document.getElementById('mp-price-' + p);
-            if (el && data.pricesPEN[p]) el.textContent = 'S/ ' + data.pricesPEN[p];
+            if (el && data.prices[p]) el.textContent = '$' + data.prices[p];
           }
         }
         tickCountdown();
