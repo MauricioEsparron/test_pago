@@ -9,11 +9,11 @@
 export const PROMO_END = Date.UTC(2026, 9, 16, 0, 0, 0); // mes 9 = octubre
 
 const PROMO_PRICES   = { pro: '1.99',  founder: '4.99'  };
-const REGULAR_PRICES = { pro: '4.99', founder: '5.99' };
+const REGULAR_PRICES = { pro: '4.99', founder: '7.99' };
 
 // Mercado Pago (cuenta de Perú) cobra en soles: precios redondos equivalentes
 const PROMO_PRICES_PEN   = { pro: '7.50',  founder: '18.90' };
-const REGULAR_PRICES_PEN = { pro: '18.90', founder: '22.50' };
+const REGULAR_PRICES_PEN = { pro: '18.90', founder: '30.00' };
 
 export function isPromoActive(now = Date.now()) {
   return now < PROMO_END;
