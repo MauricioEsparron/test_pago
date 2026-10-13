@@ -847,6 +847,10 @@
       .specs-grid { grid-template-columns: repeat(3, 1fr); }
       .hero-title { font-size: 40px; }
     }
+    .how-list { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 8px; }
+    .how-list li { display: flex; align-items: flex-start; gap: 10px; color: #9ca3af; line-height: 1.45; font-size: 14px; }
+    .how-list li i { color: #8b5cf6; font-size: 1.1rem; margin-top: 1px; }
+    .how-list code { font-size: 0.9em; padding: 1px 5px; border-radius: 5px; background: rgba(255,255,255,0.07); }
   </style>
 </head>
 <body>
@@ -890,7 +894,7 @@
   <div class="grid-bg"></div>
   <div class="scanlines"></div>
   <div class="hero-center">
-    <div class="hero-badge">competitive tool</div>
+    <div class="hero-badge">Configurador para VALORANT</div>
     <div class="hero-title">VAL_Config<span>Pro</span></div>
     <div class="hero-subtitle">True Stretched · Hz Control · FPS Ultra</div>
   </div>
@@ -920,7 +924,7 @@
     </div>
     <div class="feature-item">
       <div class="feature-icon"><i class="ti ti-rocket"></i></div>
-      <div class="feature-text"><strong>Panel FPS Ultra</strong><span>Optimización avanzada de rendimiento</span></div>
+      <div class="feature-text"><strong>Panel FPS Ultra</strong><span>Ajusta la calidad gráfica del archivo de configuración, con copia para restaurar</span></div>
     </div>
     <div class="feature-item">
       <div class="feature-icon"><i class="ti ti-brush"></i></div>
@@ -928,11 +932,11 @@
     </div>
     <div class="feature-item">
       <div class="feature-icon"><i class="ti ti-users"></i></div>
-      <div class="feature-text"><strong>Multicuenta Riot</strong><span>Gestión completa de múltiples cuentas</span></div>
+      <div class="feature-text"><strong>Perfiles por cuenta</strong><span>Configura cada cuenta usada en tu PC (no guarda contraseñas ni inicia sesión)</span></div>
     </div>
     <div class="feature-item">
       <div class="feature-icon"><i class="ti ti-lock"></i></div>
-      <div class="feature-text"><strong>Bloqueo de archivos</strong><span>Protección en tiempo real del .ini</span></div>
+      <div class="feature-text"><strong>Mantiene tu configuración</strong><span>Evita que se pierdan tus ajustes tras una actualización</span></div>
     </div>
     <div class="feature-item">
       <div class="feature-icon"><i class="ti ti-world"></i></div>
@@ -944,6 +948,16 @@
     </div>
   </div>
 
+  <!-- Cómo funciona -->
+  <p class="section-title" id="como-funciona">Cómo funciona</p>
+  <ul class="how-list">
+    <li><i class="ti ti-file-settings"></i> <span>Edita <code>GameUserSettings.ini</code>, el archivo de configuración de VALORANT.</span></li>
+    <li><i class="ti ti-device-desktop"></i> <span>Cambia la resolución y los Hz de Windows.</span></li>
+    <li><i class="ti ti-trash"></i> <span>Limpia la caché de shaders y los registros.</span></li>
+    <li><i class="ti ti-shield-check"></i> <span>No se ejecuta dentro del juego, no lee su memoria y no toca tu conexión.</span></li>
+    <li><i class="ti ti-arrow-back-up"></i> <span>Todo lo puedes hacer a mano y revertir: la app solo lo automatiza.</span></li>
+  </ul>
+
   <!-- Plans -->
   <p class="section-title" id="planes">Elige tu plan</p>
 
@@ -951,7 +965,7 @@
   <div class="promo-banner" id="promo-banner">
     <div class="promo-text">
       <strong><i class="ti ti-clock-hour-4"></i> Precio early supporter por tiempo limitado</strong>
-      <span>El 16 de octubre sube a $20 (Pro) y $21.99 (Founder). Termina el 15 oct, 23:59 UTC.</span>
+      <span>El 16 de octubre sube a $4.99 (Pro) y $5.99 (Founder). Termina el 15 oct, 23:59 UTC.</span>
     </div>
     <div class="promo-timer" aria-live="off">
       <div class="promo-unit"><b id="cd-d">00</b><small>días</small></div>
@@ -980,14 +994,14 @@
     <div class="plan featured">
       <div class="plan-badge">Más popular</div>
       <div class="plan-name">Pro</div>
-      <div class="plan-price" id="price-pro">$1.99 <span class="next">Desde el 16 oct: $20</span></div>
+      <div class="plan-price" id="price-pro">$1.99 <span class="next">Desde el 16 oct: $4.99</span></div>
       <div class="plan-desc" id="desc-pro">Early supporter — precio especial</div>
       <ul class="plan-features">
         <li><i class="ti ti-check check"></i> Todo lo de Basic</li>
         <li><i class="ti ti-check check"></i> Selector nativo Hz</li>
         <li><i class="ti ti-check check"></i> Panel FPS Ultra</li>
         <li><i class="ti ti-check check"></i> Shader Cleaner</li>
-        <li><i class="ti ti-check check"></i> Multicuenta completa</li>
+        <li><i class="ti ti-check check"></i> Perfiles por cuenta</li>
         <li><i class="ti ti-check check"></i> Actualizaciones futuras</li>
       </ul>
       <button class="btn btn-pro" id="btn-pro" onclick="scrollToPay('pro')">Comprar — $1.99</button>
@@ -995,7 +1009,7 @@
 
     <div class="plan">
       <div class="plan-name">Founder</div>
-      <div class="plan-price" id="price-founder">$4.99 <span class="next">Desde el 16 oct: $21.99</span></div>
+      <div class="plan-price" id="price-founder">$4.99 <span class="next">Desde el 16 oct: $5.99</span></div>
       <div class="plan-desc">Apoya el desarrollo</div>
       <ul class="plan-features">
         <li><i class="ti ti-check check"></i> Todo lo de Pro</li>
@@ -1221,7 +1235,7 @@
   </div>
   <div class="compat-row">
     <span class="compat-dot dot-yellow"></span>
-    <span><strong>Riot bloqueó las resoluciones 4:3 y 5:4</strong> — La configuración ahora se realiza de una nueva manera, la cual ya está cubierta por nuestra nueva aplicación</span>
+    <span><strong>Resoluciones 4:3 y 5:4</strong> — Si VALORANT no las muestra en tu PC, la app te guía para crearlas como resolución personalizada de Windows</span>
   </div>
   <div class="compat-row">
     <span class="compat-dot dot-yellow"></span>
@@ -1265,7 +1279,7 @@
      /api/prices corrige el reloj del visitante con la hora del servidor. */
   const PROMO = {
     end: Date.UTC(2026, 9, 16, 0, 0, 0), // 15 oct 23:59:59 UTC
-    regular: { pro: '20.00', founder: '21.99' }
+    regular: { pro: '4.99', founder: '5.99' }
   };
   let clockOffset = 0;
   let countdownTimer = null;
